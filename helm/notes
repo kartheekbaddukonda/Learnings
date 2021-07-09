@@ -13,4 +13,19 @@ Tiller:
 
 Chart: 
 >   A chart is a helm package, which contains all resouce definitions necessary to run an application, tool or service inside a k8s cluster.
->   
+>   For list of k8s resources you can use link: https://github.com/helm/charts (it contains stable and incubator charts)
+
+Repository:
+>   is a place where charts can be collected and shared.
+
+Release: 
+>   A release is instance of chart running in k8s cluster, one chart can often be installed many times in the same cluster, each time it is installed a new release is created.
+
+Helm commands:
+
+helm init : install tiller to your running k8s cluster
+helm search : search for charts
+helm fetch : download a chart to your local directory to view
+helm install : upload the chart to k8s
+helm list : list release of charts
+  
