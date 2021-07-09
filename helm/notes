@@ -37,6 +37,7 @@ helm search : search for charts
 helm fetch : download a chart to your local directory to view 
 helm install : upload the chart to k8s
 helm list : list release of charts
+helm repo list : list the repos added
 
 commands to run on the cluster:
 
