@@ -1,0 +1,16 @@
+Helm client:
+>   The helm client stores information in local directory referred to as  helm home.
+> default is $HOME/.helm
+> This directory contains configurations and cache data which is created by helm init.
+
+Tiller: 
+>   tiller is the cluster component of helm.
+>   it interacts directly with k8s API server to install, upgrade , query and remove k8s resources.
+>   it also stores objects that represents releases
+>   it typically installed by running the command helm init and lives in kube-system namespace (unless instructed otherwise)
+
+3 main components of HELM are : chart, repository , release
+
+Chart: 
+>   A chart is a helm package, which contains all resouce definitions necessary to run an application, tool or service inside a k8s cluster.
+>   

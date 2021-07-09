@@ -1,0 +1,469 @@
+to practice 
+
+----------------------------
+vagrant init jasonc/centos7
+vagrant up
+vagrant ssh 
+cd /vagrant
+----------------------------
+
+bash          : GNU Bourne-Again SHell
+ls            : list content in the current directory
+ls -l         : (long listing format of list[ls])
+pwd           : (present working directory)
+.sh           : (it is not required to have .sh as file extension, it can be anything)
+#!/bin/bash   : (#-sharp, !-bang , #! shebang) - followed by interpreter to use (in this case its bin/bash , other examples cane be : #!/bin/ruby , #!/usr/bin/python etc.)
+#             : is a comment which is used for humans to give a context of what to expect from this specific code
+echo          : displays the text followed by this echo in ' ' (single quotes)
+rwx           : read, write and execute - these permissions comes in 3 sets(1st - the permission of owner , 2nd - group , 3rd - everyone in the system)
+chmod         : used to modify permission (755 adds execute permission to owner, group and everyone)
+              : r = 4 , w = 2 , x = 1
+              : self - 7 (4+2+1) , group - 5 (4+1) , everyone - 5 (4+1)
+              : we can use chmod -rwx as well
+.             : represents current directory
+/             : represents directory separator
+mv s* d*      : move s -source d -destination : (used to rename)
+              : ex- mv 123.sh abc.sh
+touch         : create an empty file
+type          : shows if a command is shell built in
+              : type echo (type -a echo - list all info)
+              : this means if something is shell built in we do not need to give full path to use it
+              : u get help on built in shell commands by using help <built in command>
+              : help echo
+              : you can combine | less to get less information
+              : help echo | less
+man           : if the specific command is not shell built in and you want to know about that command u can use means
+              : man uptime
+q             : exit (From less / man)
+
+- variable assignment does not require type specification , just assign. make sure there is no space between = and value
+              : not by rule but by conventions variable are always upper case
+              : ex: WORD='script' (single or double quotes work here as its a string)
+              : variable naming convention is to have a meaningful name to it
+              : can start with letter (WORD) or _ (_WORD) but can not start with a digit (3WORD), can not have - (A-WORD) or @ (E@MAIL)
+$             : to get the value of a variable you can simply add $<KEY>
+              : if you put " " u can expand , if you put '' exact value will be referenced
+              : ex - WORD='script (echo "$WORD" - script , echo '$WORD' - $WORD)
+              : u can combine variable with hard coded text (echo "This is a shell $WORD")
+              : u can also use {} to reference variable, this is useful when appending extra text to a variable. (echo "${WORD}ing is fun")
+
+- besides user created variables, lot of special variables come along with BASH called special variables (ex: UID, PWD etc.)
+man bash     : will list all such variables
+/            : as man uses vim or vi key binding u can use / to filter
+?            : for reverse search
+             : ex: man BASH and /UID to display first occurrence of UID , you can continue search by pressing enter
+             : id -un, whoami are special programs that displays the current user details
+
+- USERNAME=$(id -un) is also equivalent to USERNAME=`id -un` (with in tik signs)
+- if UID=0 meaning user is root
+- while using 'if'  if you see ; meaning its a end of line
+             : if [[ "${UID} -eq o"]] ; then echo 'you are root user' ; else echo "the current user is: $(id -un)" ; fi
+
+- by convention if a condition executes successfully the exit status is 0 , so you can use any non zero exit status to quit.
+
+${?}         : is a special variable which returns the exit status of most recently executed command.
+
+read         : is an inbuild method for user input / interaction
+etc/login.defs : will contain the default settings while adding user
+useradd      : to add user (ex: sudo useradd kb) , note that usernames are case sensitive meaning kb is different from KB or Kb
+             : by convention all usernames are lowercase and can have numbers
+             : -c to add comments (in general used to store full name)
+             : -m to create a home directory to the user
+             : -M not to create a home directory to the user (this is default)
+
+userdel      : to delete user
+su - un      : to change user
+
+!v           : short cut to previous command starting with letter v (another example !m for man command which i executed)
+!./          : short cut to previous execution
+
+date         : prints the current date in this format (Thu May 20 06:33:26 EDT 2021)
+|            : turns the output of previous command as input to command that follows the pipe (|)
+
+
+sha1sum , sha256sum [...] are used to generate a unique number by taking big chunk of data
+to see the installed programs in linux box u can use ls -l /user/bin  which will list all programs, which further we can trim as below
+ls -l /user/bin/*sum - this will list all programs ends with sum in user/bin location
+
+head         : gives the first 10 entries of a file (by default) , you can control the number of lines by passing -n(*)
+             : head -n3 /etc/passwd - prints first 3 lines from the file /etc/passwd
+             : head -c1 /etc/passwd - prints the first line first character
+
+ -  to generate something random 
+             : date +%s%N | sha256sum | head -c10
+             : This converts the date with seconds and milliseconds to sha256 and print first 10 characters as output
+
+shuf         : shuffle the data
+fold         : fold -w / -c / -b   - will slice them to single characters and print 1 by 1 (-w eliminates a space at the end)
+
+- SPECIAL_CHARACTER=$(echo '!@#$%^&*()_+=' | fold -w1 | shuf | head -c1 ) will give a random character every time from '!@#$%^&*()_+='
+
+which/hash   : ex- which head (gives the path for head program)
+             : The above command prints /usr/bin/head , but we can have our own program with the name head in a different location
+             : to do so you need root privileges
+             : sudo vim /usr/local/bin/head (add some script to it - #!/bin/bash echo 'hello') then as root give 755 for execution
+             : now "which head" will print /usr/local/bin/head
+             : to get rid of it just removing (sudo rm /usr/local/bin/head) this alone does not work as linux saves these locations
+               in its hash tables and when u type -  type head
+                  :  head is hashed (/usr/bin/head)
+            : so we should rehash the linux tables using hash -r
+basename    : it strips off the directory portion of a string passed to it
+            : remember it wont check if file exists or not
+dirname     : its the reverse of basename, it will display the directory and ignore last dir / file
+            : like basename it also wont check if directory exists or not
+
+              : [vagrant@addusers vagrant]$ basename /i/am/not/here
+                here
+              : [vagrant@addusers vagrant]$ dirname /i/am/not/here
+                /i/am/not
+
+-eq           : equals
+-ne           : not equals
+-lt           : less than
+-gt           : greater than
+-ge           : greated than or equals
+
+${0}          : last executed command
+${#}          : number of supplied argument(s) [command followed by arguments]
+${1}, ${2} ...: first supplied argument, 2nd supplied argument so on
+...           : ellipses (meaning so on)
+${@}          : for each argument (every positional argument)
+${*}          : treats all arguments as single argument (if you put them in double quotes as this:  "${*}")
+true          : always return exit status 0
+sleep         : delays execution for specified period (10s, .5s. 5, 10m, 1h )
+shift         : shifts everything one place by default, if you want to shift 2 places u can specify that
+HOSTNAME      : build in variable in bash
+
+standard input  :      comes from keyboard or pipe   (FD 0) - file descriptor
+standard output :      displayed on screen           (FD 1) - file descriptor
+standard error  :      displayed on screen           (FD 2) - file descriptor
+
+                : File descriptors are very useful while debugging,
+                  - to print only stdin to file use 0>
+                  - to print only stdout to file use 1>
+                  - to print only errors to file use 2>
+                : head -n1 /etc/passwd /fakefile > head.out 2> head.err
+                  - this command execution will print output of /etc/passwd to head.out (note that we didnt specify 1> for head.out  as its default)
+                  - as /fakefile doenst exist it error out and that error will be pushed to head.err
+                  - so if you want to push both out and error to the same file use below syntax
+ &>             :  head -n1 /etc/passwd /fakefile &> head.both
+
+                : quickly 0< or < , 1> or > are same as they are by default. you have to explicity call 2> if you want error to be seperated
+                  : like &> we have &| which can
+
+
+
+>             : redirect the stdout to specified location
+<             : redirect the stdin to a program (note that only 1 line can be read)
+              : read LINE < ${FILE}
+>>            : add additional content to existing (as new line(s))
+ -n           : gives numbering (ex: head -n1 /etc/passwd | cat -n )
+              : note that only standard output will be counted not the standard error , so to include standard error also to counting below command to be user
+|& = 2>&1  - head -n10 /etc/passwd |& cat -n
+> /dev/null   : convention is that we dont ant to see the output instead just discard it we use > /dev/null
+&>             : The above command only discard stdout , so to discard stderr use 2> /dev/null , to discard both use &> /dev/null
+>&            : & after > assumes that we are using file descriptor instead of file name
+              : so , >&2 meaning the errors to be displayed to standard error.
+-----------------------------------------
+if [[ condition ]]
+  then
+    do some action
+  elif
+    do something else if this condition satisfies
+  else
+    do something else
+fi
+---------------------------------------
+
+while [[ condition ]]
+do
+    do some action
+done
+----------------------------------------
+
+case <parameter> in
+condition)
+
+  do something
+  ;;
+esac
+
+- * is used for match pattern
+- ? for single character check
+- | to add multiple checks on same condition
+----------------------------------------
+
+;         : command separator
+
+
+Functions ---
+
+1. you have to define a function before u use it (as it follows top down approach)
+  - global variables / sourcing libraries can be kept before functions defined
+  ------------------------------------------------------------------
+  #!/bin/bash
+  log()  [or function log { .... }]
+  {
+      echo "You are watching this because u called the log function"
+  }
+  log
+  --------------------------------------------------------------------
+the above is a simple log function.
+
+2. you can define local variables to a function (which is available to that function alone)
+3. When you are using functions be aware of the scpoe of each variable 
+4. Its best practice to use local inside functions for variables
+4. you can make any variable to readonly by applying the keyword : readonly before varibale (EXL readonly NAME='Kartheek')
+
+
+logger      : will add logging message to /var/log/messages
+            : -t is a flag used to tag
+
+
+- var survives the reboot for not loosing the data
+
+
+-f            :  check file exists
+-p            : supplying cp -p will preserve permissions and original timestamps
+return        : if for function  (while exit is for entire script)
+
+
+getops ---- for parsing command line arguments
+
+((  ))        : used for arthematic operation expansions 
+              : + for sum
+              : - for substraction
+              : * for multiplication
+              : / for division  (bah doesnt support floating point arhtemetics ex: 6/4 returns 1)
+              - external program like bc ( basic caluculator need to install in case working with numbers)
+              - bc -l will open caluculator on the consloe  (cntrl D to exit)
+              - or u can use | to send stdin to bc : echo 6 / 4 | bc -l
+              : % for modulous (reminder)
+              : ++ to increment
+              : -- to decrment
+              : += add to a variable (NUM += 5) [if NUM =1 NUM+=5 will be 6]
+              : let, expr are shell builtins used as alternate syntax for (( ))
+              
+    [vagrant@localhost vagrant]$ let NUM=2+1
+    [vagrant@localhost vagrant]$ echo ${NUM}
+    3
+    [vagrant@localhost vagrant]$ NUM=$(expr 2 + 3 )
+    [vagrant@localhost vagrant]$ echo ${NUM}
+    5
+    [vagrant@localhost vagrant]$ NUM=$(( 3 + 6 ))
+    [vagrant@localhost vagrant]$ echo ${NUM}
+    9
+
+OPTIND  : variable used to strip out the passed options using shift ${OPTIND -1}
+
+locate  :  will locate the file / program .. it will look in local db 
+
+so when add a new program or file sudo updatedb is handy to have that indexed
+
+!! will execute previous command (usecase : sudo !! - will execure the same command using sudo)
+
+gotcha : not command that all users can run will reside in /bin , where as adminstraton commands will reside in /sbin 
+
+also we can use find to find the files or programs
+
+--- find /usr/bin  (this will list directories, sub directories and files in them as well)
+--- find /usr/sbin -name userdel
+--- find / -name userdel 
+--- find / -name userdel 2>/dev/null (to throw all stderros to null bucket)
+
+
+userdel -------------------------- 
+
+-f force even if user logged in
+ if you see user in /home directory with uid meaning he doenst have a account log in associated with it
+
+ cat /etc/login.defs (refer this for max uids allocation)
+
+ userdel -r kb (-r also deletes home directory)
+
+ tar is used to archive 
+ tar -cf (c refers create and f refers file name to archive)  : [tar -cf destfilename.tar source] (tar -cf archived_videos.tar videos)
+ tar -tvf ( t refres list contents of archive, v for verbose only) : tar -tvf archived_videos.tar
+ tar -xf (x extract all files) :  tar -xf archived_videos.tar videos
+
+we use gzip to compress
+use gunzip to uncompress
+
+tar -zcvf (c refers create and f refers file name to archive, z refers to compress)
+
+
+ .. is the parent directory where we are at
+
+ ../../ will take you to 2 directories back
+
+
+to lock a user for some time period use .......
+
+
+sudo chage -E 0 <username> 
+sudo chage -E 0 kb
+
+to unlock  
+
+sudo chage -E -1 <username> 
+sudo chage -E -1 kb
+
+we could use "sudo passwod -l kb" to lock and "sudo passed -u kb" to unlock but mind it that this mechanism doesnot prevent
+user logging using ssh key. so use chage.
+
+----------------------------------------------------------
+
+cut and awk
+
+> cut is not a standalone builtin its a utility
+
+cut by byte -b
+cut by character -c 
+cut by delimiter -d (Seperator can be , )
+cut by fileds -f  (nothing but cut by columns)
+
+we can mix them all together as well
+
+all aboce requires a range 
+
+    [vagrant@localhost vagrant]$ echo "https:/,/mynameiskartheek.com/sobit/nik/jash/family" | cut -d / -f1
+    https:
+    [vagrant@localhost vagrant]$ echo "https:/,/mynameiskartheek.com/sobit/nik/jash/family" | cut -d / -f2
+    ,
+    [vagrant@localhost vagrant]$ echo "https:/,/mynameiskartheek.com/sobit/nik/jash/family" | cut -d / -f3
+    mynameiskartheek.com
+    [vagrant@localhost vagrant]$ echo "https:/,/mynameiskartheek.com/sobit/nik/jash/family" | cut -d / -f 4
+    sobit
+    [vagrant@localhost vagrant]$ echo "https:/,/mynameiskartheek.com/sobit/nik/jash/family" | cut -d / -f5
+    nik
+    [vagrant@localhost vagrant]$ echo "https:/,/mynameiskartheek.com/sobit/nik/jash/family" | cut -d / -f6
+    jash
+    [vagrant@localhost vagrant]$ echo "https:/,/mynameiskartheek.com/sobit/nik/jash/family" | cut -d / -f7
+    family
+    [vagrant@localhost vagrant]$ echo "https:/,/mynameiskartheek.com/sobit/nik/jash/family" | cut -d / -f8
+
+    [vagrant@localhost vagrant]$ 
+
+you can change the output delimiter by using flag --output-delimiter
+
+
+    [vagrant@localhost vagrant]$ cut -d ':' -f 1,3  /etc/passwd | head -3
+    root:0
+    bin:1
+    daemon:2
+    [vagrant@localhost vagrant]$ cut -d ':' -f 1,3 --output-delimiter=',' /etc/passwd | head -3
+    root,0
+    bin,1
+    daemon,2
+    [vagrant@localhost vagrant]$
+
+
+[vagrant@localhost vagrant]$ cut -d ':' -f 1,3 /etc/passwd | head -3
+root:0
+bin:1
+daemon:2
+
+the same can be achieved using awk as below:
+
+[vagrant@localhost vagrant]$ awk -F ':' '{print $1, $3}' /etc/passwd | head -3
+root 0
+bin 1
+daemon 2
+
+notice that : is replaced with a space , reason is awk has a special builtin seperator OFS (Output Filed Seperator)
+so we can use that OFS seperator to fill with our choice of delimeter
+
+[vagrant@localhost vagrant]$ awk -F ':' -v OFS=',' '{print $1, $3}' /etc/passwd | head -3
+root,0
+bin,1
+daemon,2
+
+u can achieve the same with out OFS as well as below:
+
+[vagrant@localhost vagrant]$ awk -F ':'  '{print $1"," $5}' /etc/passwd | head -3
+root,root
+bin,bin
+daemon,daemon
+
+NOTE: with cut you cant control the result display order but using awk u can do it.
+
+$NF in print will print last field , we can use $NF - 1  
+
+------- netstat -nutl result
+
+the above command gives give port information -n : to show numbers instead of names
+u  - for udp
+t  - tcp
+l  - for listening port
+4  - for tcp/udp v4
+6  - tcp v6 
+
+
+
+[vagrant@localhost vagrant]$ netstat -nutl
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN     
+tcp6       0      0 :::22                   :::*                    LISTEN     
+tcp6       0      0 ::1:25                  :::*                    LISTEN     
+udp        0      0 0.0.0.0:37474           0.0.0.0:*
+udp        0      0 127.0.0.1:323           0.0.0.0:*
+udp        0      0 0.0.0.0:68              0.0.0.0:*
+udp6       0      0 :::49961                :::*
+udp6       0      0 ::1:323                 :::*
+[vagrant@localhost vagrant]$
+
+
+to get rid of top 2 lines using grep we can do this: apply reverse grep with regular expression and reverse grep with 
+extended regular expression
+
+[vagrant@localhost vagrant]$ netstat -nutl | grep -v '^Active'
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN     
+tcp6       0      0 :::22                   :::*                    LISTEN     
+tcp6       0      0 ::1:25                  :::*                    LISTEN     
+udp        0      0 0.0.0.0:37474           0.0.0.0:*
+udp        0      0 127.0.0.1:323           0.0.0.0:*
+udp        0      0 0.0.0.0:68              0.0.0.0:*
+udp6       0      0 :::49961                :::*
+udp6       0      0 ::1:323                 :::*
+[vagrant@localhost vagrant]$ netstat -nutl | grep -Ev '^Active|^Proto'
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN     
+tcp6       0      0 :::22                   :::*                    LISTEN     
+tcp6       0      0 ::1:25                  :::*                    LISTEN     
+udp        0      0 0.0.0.0:37474           0.0.0.0:*
+udp        0      0 127.0.0.1:323           0.0.0.0:*
+udp        0      0 0.0.0.0:68              0.0.0.0:*
+udp6       0      0 :::49961                :::*
+udp6       0      0 ::1:323                 :::*
+[vagrant@localhost vagrant]$
+
+to find the ports that are in use:
+
+[vagrant@localhost vagrant]$ netstat -nutl | grep ':' | awk '{print $4}' | awk -F ':' '{print $NF}'
+22
+25
+22
+25
+37474
+323
+68
+49961
+323
+
+
+
+echo '{"name":"system-controller-dev1",
+"namespace":"conversion-eligibility-engine-npe",
+"revision":"29",
+"updated":"2021-06-09 17:20:22.170664806 +0000 UTC",
+"status":"deployed",
+"chart":"systemcontroller-0.1.0",
+"app_version":"1.16.0"}' |  jq -r '.[0].app_version'
+
+
+
+

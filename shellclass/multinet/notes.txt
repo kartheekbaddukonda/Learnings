@@ -1,0 +1,30 @@
+ping -c 3 <ip>  # send 3 packets to the ip
+tee  : reads from standard in and sends to standard out and files
+-a flag to append to existinf data in file 
+ex: echo '10.9.8.11 server01' | sudo tee -a /etc/hosts 
+
+sudo echo test >> /etc/hosts  : permission denied error will come as echo executed as root but redirection takes place as normal user 
+
+
+ssh-keygen to generate a random key pair  (accept the default s)
+
+ssh-copy-id  server01  ( to copy to generated public key to respective servers)
+
+[vagrant@admin01 ~]$ ssh-copy-id server02
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/vagrant/.ssh/id_rsa.pub"
+The authenticity of host 'server02 (10.9.8.12)' can't be established.
+ECDSA key fingerprint is SHA256:Fi4FisVgFyEkos9NgKz0q+zzZwe3+xhCHWGrXL+jZck.
+ECDSA key fingerprint is MD5:b6:04:55:d7:db:3c:a8:a1:b6:f6:15:1f:be:7e:48:41.
+Are you sure you want to continue connecting (yes/no)?  yes # after entering yes, it will promt for user password, key in and thats it 
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+vagrant@server02's password:
+
+password less communication established
+
+
+
+
+
+
+
