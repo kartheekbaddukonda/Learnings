@@ -1,3 +1,12 @@
+https://codelabs.solace.dev/codelabs/helm-environment-setup/#1
+https://www.microsoft.com/en-in/p/ubuntu-2004-lts/9n6svws3rx71?rtc=1&activetab=pivot:overviewtab
+
+WSL - kartheekb / nayan
+
+to have wsl in vs link to ubunty - view->command palette "Remote-WSL: New Window Using Distro..." command to open a remote window to Ubuntu WSL.
+
+
+
 Helm client:
 >   The helm client stores information in local directory referred to as  helm home.
 > default is $HOME/.helm
@@ -25,7 +34,37 @@ Helm commands:
 
 helm init : install tiller to your running k8s cluster
 helm search : search for charts
-helm fetch : download a chart to your local directory to view
+helm fetch : download a chart to your local directory to view 
 helm install : upload the chart to k8s
 helm list : list release of charts
-  
+
+commands to run on the cluster:
+
+    helm init
+    kubectl create serviceaccount --namespace kube-system tiller
+    kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+    kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
+
+sample:
+        helm search tomcat
+        helm fetch --untar stable/tomcat
+        tree helm inspect stable/tomcat  (sudo apt update && sudo apt install tree -y, if you do not have tree package)
+        helm inspect stable/tomcat
+        helm inspect values stable/tomcat
+        helm fetch --untar stable/redis
+
+To check the charts before install you can use the dry run and debug arguments, 
+helm install --dry-run --debug ./redis 
+helm install --name my-redis-release --set password=yoursecretpassword,persistence.enabled=false stable/redis 
+You can export the password as environment variable to access it when connecting to the master/slave service. export REDIS_PASSWORD=$(kubectl get secret --namespace default my-redis-release -o jsonpath="{.data.redis-password}" | base64 --decode)
+You can run a Redis pod you can use as a client:
+kubectl run --namespace default my-redis-release-client --rm --tty -i   --env REDIS_PASSWORD=mypassword    --image docker.io/bitnami/redis:4.0.11-debian-9 – bash
+From within the bash of this container, you can now connect to the master with:
+redis-cli -h my-redis-release-master -a $REDIS_PASSWORD 
+authenticate with the password
+auth yoursecretpassword
+set hi "hello"
+get hi
+
+
+
