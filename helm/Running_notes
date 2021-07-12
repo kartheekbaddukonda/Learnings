@@ -1,0 +1,418 @@
+https://codelabs.solace.dev/codelabs/helm-environment-setup/#1
+https://www.microsoft.com/en-in/p/ubuntu-2004-lts/9n6svws3rx71?rtc=1&activetab=pivot:overviewtab
+
+WSL - kartheekb / nayan
+
+to have wsl in vs link to ubunty - view->command palette "Remote-WSL: New Window Using Distro..." command to open a remote window to Ubuntu WSL.
+
+Helm client:
+>   The helm client stores information in local directory referred to as  helm home.
+> default is $HOME/.helm
+> This directory contains configurations and cache data which is created by helm init.
+
+Tiller:  (from v2 its depricated)
+>   tiller is the cluster component of helm.
+>   it interacts directly with k8s API server to install, upgrade , query and remove k8s resources.
+>   it also stores objects that represents releases
+>   it typically installed by running the command helm init and lives in kube-system namespace (unless instructed otherwise)
+
+3 main components of HELM are : chart, repository , release
+
+Chart:
+>   A chart is a helm package, which contains all resouce definitions necessary to run an application, tool or service inside a k8s cluster.
+>   For list of k8s resources you can use link: https://github.com/helm/charts (it contains stable and incubator charts)
+
+
+hub.helm.sh (now : https://artifacthub.io/)
+
+Repository:
+>   is a place where charts can be collected and shared.
+
+Release:
+>   A release is instance of chart running in k8s cluster, one chart can often be installed many times in the same cluster, each time it is installed a new release is created.
+
+Helm commands:
+****************
+
+helm
+helm search hub
+helm search hub mysql
+helm repo add stable https://charts.helm.sh/stable
+helm search repo stable
+
+helm repo list
+helm repo update
+helm install stable/mysql --generate-name
+kubectl get all
+helm install myairflow stable/airflow
+helm ls
+helm uninstall myairflow
+
+helm create mychart
+create below cm yaml under /mychart/templates/configmap.yaml
+        configmap.yaml
+        ~~~~~~~~~~~~~
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+        name: mychart-configmap
+        data:
+        myvalue: "Sample Config Map"
+helm install helm-demo-configmap ./mychart
+helm ls
+kubectl get all
+helm get manifest helm-demo-configmap
+kubectl describe configmaps mychart-configmap
+helm uninstall helm-demo-configmap
+
+    built-in objects:
+    ------------------
+        https://helm.sh/docs/chart_template_guide/builtin_objects/
+            apiVersion: v1
+            kind: ConfigMap
+            metadata:
+            name: {{ .Release.Name }}-configmap
+            data:
+            myvalue: "Sample Config Map"
+        helm install releasename-test ./mychart
+        helm get manifest releasename-test
+        helm install --debug --dry-run dryrun-test ./mychart
+        kubectl describe configmaps releasename-test-configmap
+        helm uninstall releasename-test
+
+    read-values from a template:
+    -----------------------------
+        mychart/values.yaml
+            costCode: CC98112
+        costCode: {{ .Values.costCode }}
+        helm install --debug --dry-run firstdryrun ./mychart
+        helm install firstvalue ./mychart
+        helm get manifest firstvalue
+        kubectl describe configmaps firstvalue-configmap
+
+    set-values to template:
+    -----------------------
+        helm install --dry-run --debug --set costCode=CC00000 valueseteg ./mychart
+        helm install valueseteg ./mychart --set costCode=CC00000
+        helm get manifest valueseteg
+        kubectl describe configmaps valueseteg-configmap
+        helm ls
+        helm uninstall valueseteg
+
+    template functions:
+    ---------------------
+        mychart/values.yaml
+            projectCode: aazzxxyy
+            infra:
+                zone: a,b,c
+                region: us-e
+        Zone: {{ quote .Values.infra.zone }}
+        Region: {{ quote .Values.infra.region }}
+        ProjectCode: {{ upper .Values.projectCode }}
+        helm install --dry-run --debug valueseteg ./mychart
+
+        https://masterminds.github.io/sprig/
+        https://godoc.org/text/template
+
+    Pipeline and default values:
+    -----------------------------
+        pipeline: {{ .Values.projectCode | upper | quote }}
+        now: {{ now | date "2006-01-02" | quote }}
+        helm install --dry-run --debug valueseteg ./mychart
+
+        default value:
+        contact: {{ .Values.contact | default "1-800-123-0000" | quote }}
+        helm install --dry-run --debug valueseteg ./mychart
+        helm install --dry-run --debug --set contact=1-800-800-8888 valueseteg ./mychart
+
+    flow control - if/else:
+    ------------------------
+        projectCode: aazzxxyy
+        infra:
+            zone: a,b,c
+            region: us-e
+
+        {{ if eq .Values.infra.region "us-e" }}
+        ha: true
+        {{ end }}
+        note: this will print a space in result, to get rid of it add - as below
+        {{- if eq .Values.infra.region "us-e" }}
+        ha: true
+        {{- end }}
+
+        //Should not be done. Error
+        {{- if eq .Values.infra.region "us-e" -}}
+            ha: true
+        {{- end -}}
+        helm install --dry-run --debug controlif ./mychart
+        helm install controlif ./mychart
+        helm get manifest controlif
+        helm uninstall controlif
+
+    scope using with:
+    -------------------
+        mychart/values.yaml
+        tags:
+        machine: frontdrive
+        rack: 4c
+        drive: ssd
+        vcard: 8g
+
+        {{- with .Values.tags }}
+        Machine Type: {{ .machine | default "NA" | quote }}
+        Rack ID: {{ .rack | quote }}
+        Storage Type: {{ .drive | upper | quote }}
+        Video Card: {{ .vcard | quote }}
+        {{- end }}
+
+        metadata:
+        name: {{ .Release.Name}}-configmap
+        labels:
+            {{- with .Values.tags }}
+            first: {{ .machine }}
+            second: {{ .rack }}
+            third: {{ .drive }}
+            {{- end }}
+
+        {{- with .Values.tags }}
+        Machine Type: {{ .machine | default "NA" | quote }}
+        Rack ID: {{ .rack | quote }}
+        Storage Type: {{ .drive | upper | quote }}
+        Video Card: {{ .vcard | quote }}
+        Release: {{ .Release.Name }}
+        {{- end }}
+
+        # the above execution will error out as release in in the tag scope and value is unknown, can be solved this issue using variables
+
+        {{- with .Values.tags }}
+        Machine Type: {{ .machine | default "NA" | quote }}
+        Rack ID: {{ .rack | quote }}
+        Storage Type: {{ .drive | upper | quote }}
+        Video Card: {{ .vcard | quote }}
+        {{- end }}
+        Release: {{ .Release.Name }}
+
+        helm install --dry-run --debug withscope ./mychart
+
+
+    Looping using Range:
+    ---------------------
+        mychart/values.yaml
+        LangUsed:
+            - Python
+            - Ruby
+            - Java
+            - Scala
+
+        LangUsed: |-
+        {{- range .Values.LangUsed }}
+        - {{ . | title | quote }}
+        {{- end }}
+        #title - Title case functions
+        helm install --dry-run --debug controlif ./mychart
+
+        NetSpeed: |-
+        {{- range tuple "low" "medium" "high" }}
+        - {{ . }}
+        {{- end }}
+        helm install --dry-run --debug controlif ./mychart
+
+    template Variables:
+    --------------------
+
+        {{- $relname := .Release.Name -}}
+        {{- with .Values.tags }}
+        Machine Type: {{ .machine | default "NA" | quote }}
+        Rack ID: {{ .rack | quote }}
+        Storage Type: {{ .drive | upper | quote }}
+        Video Card: {{ .vcard | quote }}
+        Release: {{ $relname }}
+        {{- end }}
+        helm install --dry-run --debug vartest ./mychart
+
+        LangUsed: |-
+        {{- range $index, $topping := .Values.LangUsed }}
+        - {{ $index }} : {{ $topping }}
+        {{- end }}
+
+        tags:
+        {{- range $key, $value := .Values.tags }}
+        {{ $key }} : {{ $value }}
+        {{- end }}
+
+        labels:
+        helm.sh/chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+        app.kubernetes.io/instance: "{{ $.Release.Name }}"
+        app.kubernetes.io/version: "{{ $.Chart.AppVersion }}"
+        app.kubernetes.io/managed-by: "{{ $.Release.Service }}"
+
+    Include content from same file: (named templates)
+    ----------------------------------------------------
+
+        {{- define "mychart.systemlables" }}
+        labels:
+            drive: ssd
+            machine: frontdrive
+            rack: 4c
+            vcard: 8g
+        {{- end }}
+        # the above block can be in a seperate file with _ or can b in the sme block
+        {{- template "mychart.systemlables" }}
+        helm install --dry-run --debug templatedemo ./mychart
+
+    Template include using scope:
+    ------------------------------
+
+        _helpers.tpl
+        {{- define "mychart.systemlables" }}
+            labels:
+            drive: ssd
+            machine: frontdrive
+            rack: 4c
+            vcard: 8g
+        {{- end }}
+        app.kubernetes.io/instance: "{{ $.Release.Name }}"
+        app.kubernetes.io/version: "{{ $.Chart.AppVersion }}"
+        app.kubernetes.io/managed-by: "{{ $.Release.Service }}"
+
+        {{- template "mychart.systemlables" . }} or
+        {{- template "mychart.systemlables" $ }}
+    helm install --dry-run --debug templatedemo ./mychart
+
+    Include template using keyword include:
+    ----------------------------------------
+        _helpers.tpl
+        {{- define "mychart.version" -}}
+        app_name: {{ .Chart.Name }}
+        app_version: "{{ .Chart.Version }}"
+        {{- end -}}
+        #error
+        labels:
+            {{- template "mychart.version" $ }}
+
+        helm install --dry-run --debug templatedemo ./mychart
+
+        metadata:
+        name: {{ .Release.Name}}-configmap
+        labels:
+        {{ include "mychart.version" . | indent 4 }}
+        data:
+        myvalue: "Sample Config Map"
+        costCode: {{ .Values.costCode }}
+        Zone: {{ quote .Values.infra.zone }}
+        Region: {{ quote .Values.infra.region }}
+        ProjectCode: {{ upper .Values.projectCode }}
+        pipeline: {{ .Values.projectCode | upper | quote }}
+        now: {{ now | date "2006-01-02"| quote }}
+        contact: {{ .Values.contact | default "1-800-123-0000" | quote }}
+        {{- range $key, $value := .Values.tags }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+        {{include "mychart.version" $ | indent 2 }}
+
+        helm install --dry-run --debug templatedemo ./mychart
+
+    Notes:
+    -------
+
+        templates/NOTES.txt
+        Thank you for support {{ .Chart.Name }}.
+        Your release is named {{ .Release.Name }}.
+        To learn more about the release, try:
+        $ helm status {{ .Release.Name }}
+        $ helm get all {{ .Release.Name }}
+        $ helm uninstall {{ .Release.Name }}
+
+        helm install notesdemo ./mychart
+
+    sub-charts:
+    ------------
+
+        cd mychart/charts
+        helm create mysubchart
+        rm -rf mysubchart/templates/*.*
+        mychart/charts/mysubchart/values.yaml (delete everything and dd below)
+        dbhostname: mysqlnode
+        mychart/charts/mysubchart/templates/configmap.yaml (create this as below)
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+        name: {{ .Release.Name }}-innerconfig
+        data:
+        dbhost: {{ .Values.dbhostname }}
+        helm install --dry-run --debug mysubchart mychart/charts/mysubchart
+        Over riding values from parent:
+            mychart/values.yaml (Add below)
+            mysubchart:
+                dbhostname: prodmyqlnode
+        helm install --dry-run --debug subchartoverride mychart
+
+    subchart global values:
+    ------------------------
+        mychart/values.yaml
+        global:
+        orgdomain: com.muthu4all
+        mychart/charts/mysubchart/templates/configmap.yaml
+        and
+        mychart/templates/configmap.yaml
+        orgdomain: {{ .Values.global.orgdomain }}
+        helm install --dry-run --debug subchartoverride mychart
+
+Chart repository:
+------------------
+
+    Refer 1, 2, 3
+    helm create repotest
+    helm package repotest  (will pckage the charts)
+    curl --data-binary "@repotest-0.1.1.tgz" http://192.168.0.52:8080/api/charts  (will push to repo) [option 1]
+    helm search repo mychartmuseumrepo (will search local in case you need updated info do update as below)
+    helm repo update
+    helm search repo mychartmuseumrepo
+    helm search repo -l mychartmuseumrepo (to see all versions)
+
+    adding more charts to repo:
+    *****************************
+
+    helm create repotest2
+    helm package repotest2
+    cp repotest2-0.1.0.tgz <chart museum storage> (idelly we dont use this as this is local i can use here) [options 2]
+    helm repo update
+    helm search repo mychartmuseumrepo
+    helm search repo -l mychartmuseumrepo
+
+    to install plugins to helm: (below is push plugin to push charts to repo)
+    ***************************************************************************
+
+     helm plugin install https://github.com/chartmuseum/helm-push.git
+     helm plugin list
+     helm create helmpushdemo
+     helm push helmpushdemo/ mychartmuseumrepo [Option 3]
+     helm repo update
+     helm search repo mychartmuseumrepo
+
+     Using github as repo:
+    ************************
+
+    mkdir helm_git_repo
+    cd helm_git_repo
+    echo "# helm_repo" >> README.md
+    git init
+    git add README.md
+    git commit -m "first commit"
+    git config --global user.email "muthu4all@gmail.com"
+    git config --global user.name "Muthukumar"
+    git commit -m "first commit"
+    git remote add origin https://github.com/<<useraccount>>/helm_git_repo.git
+    git push -u origin master
+    git remote add origin https://github.com/<<useraccount>>/helm_git_repo.git
+    git push -u origin master
+    cd ..
+    helm create gitrepotest
+    pwd
+    cd helm_git_repo
+    helm package /root/helm_demo/gitrepotest
+    helm repo index .
+    git add .
+    git commit -m "my-repo"
+    git push -u origin master
+    https://raw.githubusercontent.com/<<useraccount>>/helm_git_repo/master

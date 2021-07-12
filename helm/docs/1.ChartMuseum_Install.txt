@@ -1,0 +1,17 @@
+ curl -LO https://s3.amazonaws.com/chartmuseum/release/latest/bin/linux/amd64/chartmuseum
+ 
+ chmod +x ./chartmuseum
+ 
+ mv ./chartmuseum /usr/local/bin
+ 
+ chartmuseum --version
+ 
+ ~~~~~~~~
+ 
+ chartmuseum --help
+ 
+ chartmuseum --debug --port=8080 \
+   --storage="local" \
+  --storage-local-rootdir="./chartstorage"
+  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

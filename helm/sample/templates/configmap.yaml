@@ -1,0 +1,66 @@
+{{/*
+commention this as it is not consumed from _helper
+{{- define "mychart.systemlables" }}
+  labels:
+    drive: ssd
+    machine: frontdrive
+    rack: 4c
+    vcard: 8g
+{{- end }}
+*/}}
+apiVersion: v1
+kind: ConfigMap
+{{/* 
+metadata:
+  name: {{ .Release.Name }}-configmap
+{{- template "mychart.systemlables" }} # this will result in build in value references to be blank, so use below 
+  {{- template "mychart.systemlables" . }}
+commention this as it is not consumed from above template definition
+#   labels:
+#   {{- with .Values.tags }}
+#     first: {{ .machine }}
+#     second: {{ .rack }}
+#     third: {{ .drive }}
+#   {{- end }}
+*/}}
+
+metadata:
+  name: {{ .Release.Name}}-configmap
+  labels:
+{{ include "mychart.version" . | indent 4 }}
+data:
+  myvalue: "Sample Config Map"
+  costCode: {{ .Values.costCode }}
+  Zone: {{ quote .Values.infra.zone }}
+  Region: {{ quote .Values.infra.region }}
+  ProjectCode: {{ upper .Values.projectCode }}
+  pipeline: {{ .Values.projectCode | upper | quote }}
+  now: {{ now | date "2006-01-02"| quote }}
+  contact: {{ .Values.contact | default "1-800-123-0000" | quote }}
+  {{- range $key, $value := .Values.tags }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{include "mychart.version" $ | indent 2 }}
+
+{{/* 
+data:
+  myvalue: "Sample Config Map"
+  costCode: {{ .Values.costCode }} #Value replace
+  ProjectCode: {{ upper .Values.projectCode }} #function call
+  {{- if eq .Values.infra.region "us-e" }} #If control flow
+  ha: true
+  {{- end }}
+  {{- $relname := .Release.Name -}} # Variable
+  {{- with .Values.tags }} #with scope
+  Machine Type: {{ .machine | default "NA" | quote }}
+  Rack ID: {{ .rack | quote }}
+  Storage Type: {{ .drive | upper | quote }}
+  Video Card: {{ .vcard | quote }}
+  Release: {{ $relname }}
+  {{- end }}
+  #loop with range
+  LangUsed: |-
+    {{- range .Values.LangUsed }}
+    - {{ . | title | quote }}
+    {{- end }}
+*/}}
