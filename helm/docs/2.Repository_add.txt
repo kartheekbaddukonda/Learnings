@@ -1,10 +1,5 @@
- helm repo list
- 
- helm repo add chartmuseum http://localhost:8080
- 
 helm repo list
-
+helm repo add chartmuseum http://localhost:8080
+helm repo list
 helm search repo nginx
-
-
 helm search repo chartmuseum

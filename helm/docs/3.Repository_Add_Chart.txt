@@ -1,24 +1,14 @@
- 
- chartmuseum --debug --port=8080 \
-   --storage="local" \
+chartmuseum --debug --port=8080 \
+  --storage="local" \
   --storage-local-rootdir="./chartstorage"
-  
   helm repo list
   helm repo add mychartmuseumrepo http://192.168.0.52:8080
   helm repo list
-  
 helm search repo mychartmuseumrepo
-
 helm create repotest
-
-
 helm package repotest/
 mkdir mychartdist
 mv repotest-0.1.0.tgz mychartdist/
-
-
 cd mychartdist
-
 curl --data-binary "@repotest-0.1.1.tgz" http://192.168.0.52:8080/api/charts
-
 helm repo list

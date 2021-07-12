@@ -10,11 +10,13 @@ Helm client:
 > default is $HOME/.helm
 > This directory contains configurations and cache data which is created by helm init.
 
-Tiller:  (from v2 its depricated)
->   tiller is the cluster component of helm.
->   it interacts directly with k8s API server to install, upgrade , query and remove k8s resources.
->   it also stores objects that represents releases
->   it typically installed by running the command helm init and lives in kube-system namespace (unless instructed otherwise)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+    Tiller:  (from v2 its depricated)
+    >   tiller is the cluster component of helm.
+    >   it interacts directly with k8s API server to install, upgrade , query and remove k8s resources.
+    >   it also stores objects that represents releases
+    >   it typically installed by running the command helm init and lives in kube-system namespace (unless instructed otherwise)
+-------------------------------------------------------------------------------------------------------------------------------------------------
 
 3 main components of HELM are : chart, repository , release
 
@@ -415,4 +417,238 @@ Chart repository:
     git add .
     git commit -m "my-repo"
     git push -u origin master
-    https://raw.githubusercontent.com/<<useraccount>>/helm_git_repo/master
+    https://raw.githubusercontent.com/kartheekbaddukonda/Learnings/master/helm/helm_repo_gh/
+
+    add the github repo to helm repo list:
+    ----------------------------------------
+
+    helm repo add --username kartheekb@gmail.com --password 'xxxxxx' kb_gh_repo 'https://raw.githubusercontent.com/kartheekbaddukonda/Learnings/master/helm/helm_repo_gh/'
+    helm search repo kb_gh_repo
+    helm repo update
+    helm search repo -l mychartmuseumrepo
+    helm create gitrepotest2
+    cd gitrepotest2
+    cd helm_git_repo
+    helm package /root/helm_demo/gitrepotest
+    helm repo index .
+    git add .
+    git commit -m "my-repo"
+    git push -u origin master
+    helm repo update
+    helm search repo -l mychartmuseumrepo
+
+Chart Management:
+-----------------
+
+    Create and install:
+    ********************
+
+        helm create upgrade-rlbk
+        helm repo add mychartmuseumrepo http://192.168.0.52:8080
+        helm repo list
+        helm search repo mychartmuseumrepo
+        helm push upgrade-rlbk/ mychartmuseumrepo
+        helm repo update
+        helm search repo mychartmuseumrepo
+        helm search repo -l mychartmuseumrepo
+        kubectl get all
+        helm install install-upgrade-rlbk-demo mychartmuseumrepo/upgrade-rlbk
+        helm list
+        kubectl get all
+        helm list
+
+    upgrade:
+    **********
+
+        vi Charts.yaml
+        vi values.yaml
+        helm push upgrade-rlbk/ mychartmuseumrepo
+        helm repo update
+        helm search repo mychartmuseumrepo
+        helm search repo -l mychartmuseumrepo
+        helm list
+        helm upgrade install-upgrade-rlbk-demo mychartmuseumrepo/upgrade-rlbk
+        kubectl get all
+        helm history install-upgrade-rlbk-demo
+
+    rollback & uninstall:
+    *********************
+
+        helm rollback install-upgrade-rlbk-demo 2 (specify the number that you wanted to rollback to)
+        helm history install-upgrade-rlbk-demo
+        kubectl get all
+        helm uninstall install-upgrade-rlbk-demo
+        helm list
+        kubectl get all
+
+    Helm dependency:
+    *****************
+
+        helm create dependencytest
+        helm install mydeptestinstall --dry-run --debug ./dependencytest
+        helm install mydeptestinstall ./dependencytest --set service.type=NodePort
+        helm list
+        helm status mydeptestinstall
+        kubectl get all
+        values.yaml
+        image:
+          repository: muthu4all/todo
+          tag: 1.0.0
+          pullPolicy: IfNotPresent
+        helm lint ./dependencytest
+        helm list
+        helm uninstall mydeptestinstall
+        helm install mydeptestinstalltodo ./dependencytest --set service.type=NodePort
+        helm list
+        kubectl get all
+        requirements.yaml
+        dependencies:
+        - name: mariadb
+          version: 7.x.x
+          repository: https://kubernetes-charts.storage.googleapis.com/
+        helm dependency build ./dependencytest
+        helm dependency update ./dependencytest
+        helm uninstall mydeptestinstalltodo
+        helm install mydepwithmaria ./dependencytest --set service.type=NodePort
+        kubectl get all
+        kubectl describe pod <<>>
+
+    chart hooks:
+    *************
+
+    available hooks : preinstall, post-install, pre-delete, pre-upgrade, post-upgrade, pre-rollback, post-rollback
+
+        helm create hooktest
+        ./hooktest/templates
+
+        preinstall-hook.yaml
+
+            apiVersion: v1
+            kind: Pod
+            metadata:
+            name: preinstall-hook
+            annotations:
+                "helm.sh/hook": "pre-install"
+            spec:
+            containers:
+            - name: hook1-container
+                image: busybox
+                imagePullPolicy: IfNotPresent
+                command: ['sh', '-c', 'echo The pre-install hook Pod is running  - preinstall-hook && sleep 10']
+            restartPolicy: Never
+            terminationGracePeriodSeconds: 0
+
+        postinstall-hook.yaml
+
+            apiVersion: v1
+            kind: Pod
+            metadata:
+            name: postinstall-hook
+            annotations:
+                "helm.sh/hook": "post-install"
+            spec:
+            containers:
+            - name: hook2-container
+                image: busybox
+                imagePullPolicy: IfNotPresent
+                command: ['sh', '-c', 'echo post-install hook Pod is running - post-install&& sleep 5']
+            restartPolicy: Never
+            terminationGracePeriodSeconds: 0
+
+        helm install hooktestinstall ./hooktest
+        helm status hooktestinstall
+        kubectl get pods
+        kubectl describe pod/preinstall-hook
+        kubectl describe pod/preinstall-hook | grep -E 'Anno|Started:|Finished:'
+        kubectl describe pod/hooktestinstall-86b894bc76-4jn7c | grep -E 'Anno|Started:|Finished:'
+        kubectl describe pod/postinstall-hook | grep -E 'Anno|Started:|Finished:'
+        helm delete hooktestinstall
+        kubectl delete pod/preinstall-hook
+        kubectl delete pod/postinstall-hook
+
+    hooks as jobs:
+    ****************
+
+    preinstalljob-hook-job.yaml
+
+            apiVersion: batch/v1
+            kind: Job
+            metadata:
+            name: preinstalljob-hook-job
+            annotations:
+                "helm.sh/hook": "pre-install"
+            spec:
+            template:
+                spec:
+                containers:
+                - name: pre-install
+                    image: busybox
+                    imagePullPolicy: IfNotPresent
+                    command: ['sh', '-c', 'echo pre-install Job Pod is Running ; sleep 3']
+                restartPolicy: OnFailure
+                terminationGracePeriodSeconds: 0
+            backoffLimit: 3
+            completions: 1
+            parallelism: 1
+
+    postinstalljob-hook-job.yaml
+
+            apiVersion: batch/v1
+            kind: Job
+            metadata:
+            name: postinstalljob-hook-job
+            annotations:
+                "helm.sh/hook": "post-install"
+            spec:
+            template:
+                spec:
+                containers:
+                - name: post-install
+                    image: busybox
+                    imagePullPolicy: IfNotPresent
+                    command: ['sh', '-c', 'echo post-install Pod is Running ; sleep 6']
+                restartPolicy: OnFailure
+                terminationGracePeriodSeconds: 0
+            backoffLimit: 3
+            completions: 1
+            parallelism: 1
+
+    helm install hooktestjobinstall ./hooktest
+    kubectl describe pod/preinstalljob-hook-job-m9zlx | grep -E 'Anno|Started:|Finished:'
+    kubectl describe pod/hooktestjobinstall-5d45b488dc-fjzhk | grep -E 'Anno|Started:|Finished:'
+    kubectl describe pod/postinstalljob-hook-job-pld5b | grep -E 'Anno|Started:|Finished:'
+    helm delete hooktestjobinstall
+    kubectl get jobs
+    kubectl delete job/preinstalljob-hook-job
+    kubectl delete job/postinstalljob-hook-job
+
+    hooks with wight:
+    ****************
+
+    refer 4
+
+Helm lint and test:
+--------------------
+    helm lint upgrade-rlbk (this is before deploy)
+    helm test upgrade-rlbk (this is fter deploy, test if able to connect to all pods or not)
+
+helm get and status:
+---------------------
+
+    helm list
+    helm get notes install-upgrade-rlbk-demo
+    helm get values install-upgrade-rlbk-demo
+    helm get manifest install-upgrade-rlbk-demo
+    helm get hooks install-upgrade-rlbk-demo
+    helm get all install-upgrade-rlbk-demo
+    helm status install-upgrade-rlbk-demo
+
+helm proveanance and integrity:
+---------------------------------
+
+    gpg --gen-key
+    gpg --list-secret-keys
+    helm create signchartdemo
+    ls ~/.gnupg/
+    helm package --sign --key 'helmkeydemo' --keyring ~/.gnupg/secring.gpg signchartdemo
+    helm verify signchartdemo-0.1.0.tgz
