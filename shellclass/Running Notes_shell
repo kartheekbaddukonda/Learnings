@@ -1,9 +1,9 @@
-to practice 
+to practice
 
 ----------------------------
 vagrant init jasonc/centos7
 vagrant up
-vagrant ssh 
+vagrant ssh
 cd /vagrant
 ----------------------------
 

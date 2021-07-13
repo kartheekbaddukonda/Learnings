@@ -1,0 +1,65 @@
+links:
+
+official website: https://git-scm.com/
+who uses git:
+    https://stackshare.io/git
+    https://government.github.com/community/
+    sample book : https://github.com/HoTT/book (even writers use git)
+git guis:https://git-scm.com/downloads/guis 
+
+
+Git Core:
+----------
+intro to Git
+Installation
+Git Basics
+committing in detail
+Branching
+Merging
+
+next level:
+-------------
+Diffing
+Stashing
+Undoing changes
+
+tool specific:
+---------------
+github intro
+fetching & pulling
+github odds & ends
+Collabrative workflow
+
+The other parts:
+-----------------
+Rebasing
+interactive Rebasing
+git tags
+git behind the scenes
+reflogs
+custom alias
+
+what git helps us with:
+-----------------------
+> track changes across multiple files
+> compare versions of a project
+> time travel back to older versions
+> Revert to a previous version
+> collaborate and share changes
+> Combine changes
+
+* git config --global user.name "Kartheek"
+* git config --global user.email kartheekb@gmail.com
+
+some linux basic commands you should know:
+
+-   ls (list) , ls -a (list hidden files) , ls -la  (list the full details)  | ls abcd | ls abcd/xyz
+-   pwd (print working directory)
+-   cd (Change directory) / cd .. (to go back one level)
+-   touch (create a new file)
+-   mkdir (make a directory)
+-   rm (remove) , rm -rf (remove recursive and force for folders)
+-   open . (mac) / start . | open abcd
+-   clear (clear screen)
+-   tab (keyboard shortcut to auto complete)
+
