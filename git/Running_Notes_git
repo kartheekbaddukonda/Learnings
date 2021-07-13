@@ -1,12 +1,12 @@
-links:
-
 official website: https://git-scm.com/
 who uses git:
     https://stackshare.io/git
     https://government.github.com/community/
     sample book : https://github.com/HoTT/book (even writers use git)
-git guis:https://git-scm.com/downloads/guis 
-
+git guis:https://git-scm.com/downloads/guis
+git add : https://git-scm.com/docs/git-add
+git commit : https://git-scm.com/docs/git-commit
+git log: https://git-scm.com/docs/git-log
 
 Git Core:
 ----------
@@ -53,7 +53,7 @@ what git helps us with:
 
 some linux basic commands you should know:
 
--   ls (list) , ls -a (list hidden files) , ls -la  (list the full details)  | ls abcd | ls abcd/xyz
+-   ls (list) , ls -a (list hidden files) , ls -la  (long list)  | ls abcd | ls abcd/xyz
 -   pwd (print working directory)
 -   cd (Change directory) / cd .. (to go back one level)
 -   touch (create a new file)
@@ -63,3 +63,19 @@ some linux basic commands you should know:
 -   clear (clear screen)
 -   tab (keyboard shortcut to auto complete)
 
+
+basics:
+
+Prctice will be a diff directory in this laptop.
+folder name: git_practice
+    git status
+    git init (make a folder per repo and initialize, thats it)
+
+working area > git add > staging area > git commit > Repository > git push > remote repository
+
+do the work
+
+git add . (or git add file1 file2 file3 etc. for adding specific files to staging area)
+git commit (it will prompt for message)
+git commit -m "initial commit" (what ever staged can be committed to repository)
+git rm --cached file1 file2 etc. ( to remove from staging area and back to working area)
