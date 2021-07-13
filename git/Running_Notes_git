@@ -7,6 +7,9 @@ git guis:https://git-scm.com/downloads/guis
 git add : https://git-scm.com/docs/git-add
 git commit : https://git-scm.com/docs/git-commit
 git log: https://git-scm.com/docs/git-log
+git docs: https://git-scm.com/docs
+git editor config: https://git-scm.com/book/en/v2/Appendix-C%3A-Git-Commands-Setup-and-Config
+git ignore: https://www.toptal.com/developers/gitignore
 
 Git Core:
 ----------
@@ -62,7 +65,7 @@ some linux basic commands you should know:
 -   open . (mac) / start . | open abcd
 -   clear (clear screen)
 -   tab (keyboard shortcut to auto complete)
-
+-   esc i > add text > esc :wq! (write and quit)
 
 basics:
 
@@ -79,3 +82,26 @@ git add . (or git add file1 file2 file3 etc. for adding specific files to stagin
 git commit (it will prompt for message)
 git commit -m "initial commit" (what ever staged can be committed to repository)
 git rm --cached file1 file2 etc. ( to remove from staging area and back to working area)
+
+>   keep your commits atomic (the smaller commit the easier it is rollback)
+>   commit messages should be present tense (not by law by convention)
+>   always use editor than default vim that comes along with git. (its tedious task)
+    *   git config --global core.editor "code --wait"
+>   cmd + shift + P for command pallet  : shell command : install code command in path
+
+    git log --abbrev-commit
+    git log --abbrev-commit --pretty=oneline
+
+GUI (gitkraken)
+
+>   git commit --amend (you can fix typo in commit messge, you can add missing files etc.)
+(note that it is applicable for one commit ago, not some few commits ago)
+* make sure to add (git add xyz) files before amend
+
+ignoring files: ex: https://github.com/signalapp/Signal-Android
+
+>   sensitive data like secrets, API keys, credentials etc.
+>   OS files
+>   log files
+>   Dependencies and packages etc.
+
