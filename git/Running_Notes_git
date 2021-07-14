@@ -55,6 +55,7 @@ what git helps us with:
 * git config --global user.email kartheekb@gmail.com
 
 some linux basic commands you should know:
+-------------------------------------------
 
 -   ls (list) , ls -a (list hidden files) , ls -la  (long list)  | ls abcd | ls abcd/xyz
 -   pwd (print working directory)
@@ -68,40 +69,125 @@ some linux basic commands you should know:
 -   esc i > add text > esc :wq! (write and quit)
 
 basics:
+--------
 
-Prctice will be a diff directory in this laptop.
-folder name: git_practice
-    git status
-    git init (make a folder per repo and initialize, thats it)
+    Prctice will be a diff directory in this laptop.
+    folder name: git_practice
+        git status
+        git init (make a folder per repo and initialize, thats it)
 
-working area > git add > staging area > git commit > Repository > git push > remote repository
+    working area > git add > staging area > git commit > Repository > git push > remote repository
 
-do the work
+    do the work
 
-git add . (or git add file1 file2 file3 etc. for adding specific files to staging area)
-git commit (it will prompt for message)
-git commit -m "initial commit" (what ever staged can be committed to repository)
-git rm --cached file1 file2 etc. ( to remove from staging area and back to working area)
+    git add . (or git add file1 file2 file3 etc. for adding specific files to staging area)
+    git commit (it will prompt for message)
+    git commit -m "initial commit" (what ever staged can be committed to repository)
+    git rm --cached file1 file2 etc. ( to remove from staging area and back to working area)
 
->   keep your commits atomic (the smaller commit the easier it is rollback)
->   commit messages should be present tense (not by law by convention)
->   always use editor than default vim that comes along with git. (its tedious task)
-    *   git config --global core.editor "code --wait"
->   cmd + shift + P for command pallet  : shell command : install code command in path
+    >   keep your commits atomic (the smaller commit the easier it is rollback)
+    >   commit messages should be present tense (not by law by convention)
+    >   always use editor than default vim that comes along with git. (its tedious task)
+        *   git config --global core.editor "code --wait"
+    >   cmd + shift + P for command pallet  : shell command : install code command in path
 
-    git log --abbrev-commit
-    git log --abbrev-commit --pretty=oneline
+        git log --abbrev-commit
+        git log --abbrev-commit --pretty=oneline
 
-GUI (gitkraken)
+    GUI (gitkraken)
 
->   git commit --amend (you can fix typo in commit messge, you can add missing files etc.)
-(note that it is applicable for one commit ago, not some few commits ago)
-* make sure to add (git add xyz) files before amend
+    >   git commit --amend (you can fix typo in commit messge, you can add missing files etc.)
+    (note that it is applicable for one commit ago, not some few commits ago)
+    * make sure to add (git add xyz) files before amend
 
-ignoring files: ex: https://github.com/signalapp/Signal-Android
+    ignoring files: ex: https://github.com/signalapp/Signal-Android
 
->   sensitive data like secrets, API keys, credentials etc.
->   OS files
->   log files
->   Dependencies and packages etc.
+    >   sensitive data like secrets, API keys, credentials etc.
+    >   OS files
+    >   log files
+    >   Dependencies and packages etc.
 
+    another way of adding and committing in 1 liner:
+
+    git commit -a -m "one liner for add and commit"
+    note that if the file is empty it will not add, then u should use git add. and commit seperately
+
+Branching:
+-----------
+
+    git log
+
+    commit b2667f84f1e6a47c458dbbfd4b378c8dfb258168 (HEAD -> master, origin/master, origin/HEAD)
+    Author: kartheek <kartheekb@gmail.com>
+    Date:   Tue Jul 13 23:17:56 2021 +0530
+
+        added branching pdf
+
+    HEAD -> master : here HEAD is a pointer that refers to our current location in the repository
+    HEAD is a reference to the tip of the branch pointer
+    can be imagined as bookmars in a book
+
+    git branch (will list all branches) - see *
+    git branch <branch-name> - will create a branch for you
+    -   (branch names can not have spaces)
+    -   ( not that your HEAD and branch still refers to Master (or any other branch) / main only , you have to switch exclusively)
+    - git branch will create a branch based on HEAD where it is currently at.s
+    git log (shows where HEAD is pointing now along with branch ofcourse as tehy both point to same HEAD when you create a branch)
+
+    to switching between branches:
+    >   git switch  <Branch name>
+    >   git checkout <Branch name> [older way]
+
+    to create and switch in one go:
+    >   git switch  -c <Branch name>
+    >  git checkout -b <Branch name> [older way]
+
+    switching branches with unstaged changes:
+
+    > try to switch branches whith some unstaged changes on same file in current branch
+    - we either have to commit or stash them. (its called a conflict)
+
+    > try to switch branches whith some unstaged changes with new file current branch
+    - we can switch easyly as the new file is not known to current branch
+
+    recommendation is to always commit your changes in current branch
+
+    deleting a branch:
+
+    git branch -d  / --delete (if already merged)
+    git branch -D / --delete --force (if you are sure you wnat to dlete without merge)
+    note: you cant delete a branch which u are in currently
+
+    rename branch:
+
+    > git branch -m  <new name>
+    note: to rename you have to be in that branch
+
+    git branch -v gives more information about all brnches with trim sha and opeliner last commit message
+
+Merging:
+---------
+note:
+1. we merge branches, not commits
+2. we always merge to the current HEAD branch
+ex: i have master and bugfix branches, to merge bugfix changes to master , you should be in receiving branch in this case master.
+3. if your master's HEAD is still at a position where you created an initial branch, merging would be easy and its called fast-forward merging
+4. they are not forever in sync. its for the moment
+
+fast-forward:
+    git switch master (the branch where i want something to be merged to)
+    git merge bugfix
+
+recursive strategy:
+    when your destination branch is ahead of your source branch, you can still apply the same command.
+    git will create a new commit for you.
+
+resolve conflicts and merge:
+
+
+once merged you can delete the merged branch.
+note merged commits will have 2 parents
+
+
+git diff:
+----------
