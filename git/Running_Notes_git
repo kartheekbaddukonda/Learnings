@@ -185,8 +185,11 @@ recursive strategy:
 resolve conflicts and merge:
 
 
+
+
 once merged you can delete the merged branch.
 note merged commits will have 2 parents
+
 
 
 git diff:
