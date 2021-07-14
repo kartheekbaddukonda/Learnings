@@ -147,7 +147,7 @@ Branching:
     > try to switch branches whith some unstaged changes on same file in current branch
     - we either have to commit or stash them. (its called a conflict)
 
-    > try to switch branches whith some unstaged changes with new file current branch
+    > try to switch branches whith some unstaged changes with new file in current branch
     - we can switch easyly as the new file is not known to current branch
 
     recommendation is to always commit your changes in current branch
@@ -167,30 +167,105 @@ Branching:
 
 Merging:
 ---------
-note:
-1. we merge branches, not commits
-2. we always merge to the current HEAD branch
-ex: i have master and bugfix branches, to merge bugfix changes to master , you should be in receiving branch in this case master.
-3. if your master's HEAD is still at a position where you created an initial branch, merging would be easy and its called fast-forward merging
-4. they are not forever in sync. its for the moment
+    note:
+    1. we merge branches, not commits
+    2. we always merge to the current HEAD branch
+    ex: i have master and bugfix branches, to merge bugfix changes to master , you should be in receiving branch in this case master.
+    3. if your master's HEAD is still at a position where you created an initial branch, merging would be easy and its called fast-forward merging
+    4. they are not forever in sync. its for the moment
 
-fast-forward:
-    git switch master (the branch where i want something to be merged to)
-    git merge bugfix
+    fast-forward:
+        git switch master (the branch where i want something to be merged to)
+        git merge bugfix
 
-recursive strategy:
-    when your destination branch is ahead of your source branch, you can still apply the same command.
-    git will create a new commit for you.
+    as new commit from git- recursive strategy:
+        when your destination branch is ahead of your source branch, you can still apply the same command.
+        git will create a new commit for you.
 
-resolve conflicts and merge:
+    resolve conflicts and merge:
+    u can use you CLI (default editor), GUI , IDE to manually rectify the conflict.
 
-
-
-
-once merged you can delete the merged branch.
-note merged commits will have 2 parents
-
-
+    once merged you can delete the merged branch.
+    note merged commits will have 2 parents
 
 git diff:
 ----------
+
+    it doesnt perform anything to your repository , it is just am informative cli option for better understanding 
+    of what has been changed between branches, between working area to statging , staging to local and local to 
+    remote repos.
+
+    ex:
+
+    diff --git a/3.txt b/3.txt   (a is old file, b is new file)
+    index 542323c..5069130 100644 ( internl reference to these files)
+    --- a/3.txt  (old)
+    +++ b/3.txt  (old)
+    @@ -1,7 +1,7 @@  (Chunk header)
+    You may be shocked to learn that we had a hard time deciding on 10. 
+    So, being captains of our own destiny, we decided we were allowed to pick 20 . . . 
+    plus almost that many dissents. We did not allow reissues, otherwise you had better believe 
+    -this list would include The Last Samurai, Speedboat, and Who Was Changed and Who Was Dead, 
+    +this list woulsdsadd include The Last Samurai, Speedboat, and Who Was Changed and Who Was Dead, 
+    among a robust host of others. We also, for this list, discounted novels in translation, 
+    as they got their very own list last week, and including them would have necessitated a 
+    list twice as long. (My beloved Sweet Days of Discipline, certainly in the top ten novels 
+
+    >   git diff   (viewing unstaged changes)
+    >   git diff HEAD (viewing working directory changes - it includes staged and unstaged changes)
+    >   git diff --staged (or)
+        git diff --cached (viewing only staged changes)
+    >   git diff branch1..branch2 (viewing differences between 2 branches, order matters b1 becomes a , b2 becomes b)
+        git diff branch1 branch2 
+    >   git diff commit1..commit2 (viewing differences between commits, order matters c1 becomes a , c2 becomes b) )
+        git diff commit1 commit2
+    we can use diff to a specific file as well
+    >   git diff HEAD file1.txt
+    >   git diff --staged file1.txt
+
+Stashing:
+------------
+    scenario1: if there are files which are unstaged and you have to switch branch , git will let you with 'M' as indication 
+    when the modified file dont conflict with your current switch.
+
+    scenario2: if there are files which are unstaged and you have to switch branch , git wont let u in if it identifies any conflict.
+
+    >   git stash (or git stash save) - all files which are not committed yet will be stashed and make your working tree, staging area clean
+    >   git stash pop   - the stashed changes will appear back 
+    >   git stash apply - whatever has been stashed will be applied but unlike pop it wont clean up the stashed history.
+
+    you can have multiple stashes
+
+    >   git stash list (will list the stashed list)
+    >   git stash apply stash@{2} 
+    >   git stash drop stash@{1} 
+    >   git stash clear (will clear everything)
+
+time travel: (restore, rest, revert)
+--------------------------------------
+
+    checking out to specific commit:
+    ********************************
+    git checkout <abbrev comit or full sha>  - it will land you in to detached HEAD 
+    purpose/ Options: 
+    you can detach HEAD and examine the commit 
+    you can re-attach HED back simply ny using: git switch <branch>
+    you can branchoff from a specific commit : 1. git checkout <abbrevsha> 2. git switch -c <new branch>
+    you can also position your HEAD to specific commit using HEAD~ : git checkout HEAD~1 (will take your HEAD position to 1 step back ,etc.)
+    when you have multiple branches with detached HEADs the easiest way to attach back is : git switch -
+
+    Discarding changes with checkout:
+    *********************************
+    supoose you made some changes to multiple files and you dont want to keep them and to revert to previous commit how they are use this option.
+    >   git checkout HEAD <filename>
+        git checkout  -- <file1> <file2> ..
+
+    git restore (which is a new command also does the same along with additional stuff)
+
+
+
+
+
+
+
+
