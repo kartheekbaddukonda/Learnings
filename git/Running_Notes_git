@@ -68,204 +68,245 @@ some linux basic commands you should know:
 -   tab (keyboard shortcut to auto complete)
 -   esc i > add text > esc :wq! (write and quit)
 
-basics:
---------
+GIT:
+^^^^^
+    basics:
+    --------
+        Prctice will be a diff directory in this laptop.
+        folder name: git_practice
+            git status
+            git init (make a folder per repo and initialize, thats it)
 
-    Prctice will be a diff directory in this laptop.
-    folder name: git_practice
-        git status
-        git init (make a folder per repo and initialize, thats it)
+        working area > git add > staging area > git commit > Repository > git push > remote repository
 
-    working area > git add > staging area > git commit > Repository > git push > remote repository
+        do the work
 
-    do the work
+        git add . (or git add file1 file2 file3 etc. for adding specific files to staging area)
+        git commit (it will prompt for message)
+        git commit -m "initial commit" (what ever staged can be committed to repository)
+        git rm --cached file1 file2 etc. ( to remove from staging area and back to working area)
 
-    git add . (or git add file1 file2 file3 etc. for adding specific files to staging area)
-    git commit (it will prompt for message)
-    git commit -m "initial commit" (what ever staged can be committed to repository)
-    git rm --cached file1 file2 etc. ( to remove from staging area and back to working area)
+        >   keep your commits atomic (the smaller commit the easier it is rollback)
+        >   commit messages should be present tense (not by law by convention)
+        >   always use editor than default vim that comes along with git. (its tedious task)
+            *   git config --global core.editor "code --wait"
+        >   cmd + shift + P for command pallet  : shell command : install code command in path
 
-    >   keep your commits atomic (the smaller commit the easier it is rollback)
-    >   commit messages should be present tense (not by law by convention)
-    >   always use editor than default vim that comes along with git. (its tedious task)
-        *   git config --global core.editor "code --wait"
-    >   cmd + shift + P for command pallet  : shell command : install code command in path
+            git log --abbrev-commit
+            git log --abbrev-commit --pretty=oneline
 
-        git log --abbrev-commit
-        git log --abbrev-commit --pretty=oneline
+        GUI (gitkraken)
 
-    GUI (gitkraken)
+        >   git commit --amend (you can fix typo in commit messge, you can add missing files etc.)
+        (note that it is applicable for one commit ago, not some few commits ago)
+        * make sure to add (git add xyz) files before amend
 
-    >   git commit --amend (you can fix typo in commit messge, you can add missing files etc.)
-    (note that it is applicable for one commit ago, not some few commits ago)
-    * make sure to add (git add xyz) files before amend
+        ignoring files: ex: https://github.com/signalapp/Signal-Android
 
-    ignoring files: ex: https://github.com/signalapp/Signal-Android
+        >   sensitive data like secrets, API keys, credentials etc.
+        >   OS files
+        >   log files
+        >   Dependencies and packages etc.
 
-    >   sensitive data like secrets, API keys, credentials etc.
-    >   OS files
-    >   log files
-    >   Dependencies and packages etc.
+        another way of adding and committing in 1 liner:
 
-    another way of adding and committing in 1 liner:
+        git commit -a -m "one liner for add and commit"
+        note that if the file is empty it will not add, then u should use git add. and commit seperately
 
-    git commit -a -m "one liner for add and commit"
-    note that if the file is empty it will not add, then u should use git add. and commit seperately
+    Branching:
+    -----------
 
-Branching:
------------
+        git log
 
-    git log
+        commit b2667f84f1e6a47c458dbbfd4b378c8dfb258168 (HEAD -> master, origin/master, origin/HEAD)
+        Author: kartheek <kartheekb@gmail.com>
+        Date:   Tue Jul 13 23:17:56 2021 +0530
 
-    commit b2667f84f1e6a47c458dbbfd4b378c8dfb258168 (HEAD -> master, origin/master, origin/HEAD)
-    Author: kartheek <kartheekb@gmail.com>
-    Date:   Tue Jul 13 23:17:56 2021 +0530
+            added branching pdf
 
-        added branching pdf
+        HEAD -> master : here HEAD is a pointer that refers to our current location in the repository
+        HEAD is a reference to the tip of the branch pointer
+        can be imagined as bookmars in a book
 
-    HEAD -> master : here HEAD is a pointer that refers to our current location in the repository
-    HEAD is a reference to the tip of the branch pointer
-    can be imagined as bookmars in a book
+        git branch (will list all branches) - see *
+        git branch <branch-name> - will create a branch for you
+        -   (branch names can not have spaces)
+        -   ( not that your HEAD and branch still refers to Master (or any other branch) / main only , you have to switch exclusively)
+        - git branch will create a branch based on HEAD where it is currently at.s
+        git log (shows where HEAD is pointing now along with branch ofcourse as tehy both point to same HEAD when you create a branch)
 
-    git branch (will list all branches) - see *
-    git branch <branch-name> - will create a branch for you
-    -   (branch names can not have spaces)
-    -   ( not that your HEAD and branch still refers to Master (or any other branch) / main only , you have to switch exclusively)
-    - git branch will create a branch based on HEAD where it is currently at.s
-    git log (shows where HEAD is pointing now along with branch ofcourse as tehy both point to same HEAD when you create a branch)
+        to switching between branches:
+        >   git switch  <Branch name>
+        >   git checkout <Branch name> [older way]
 
-    to switching between branches:
-    >   git switch  <Branch name>
-    >   git checkout <Branch name> [older way]
+        to create and switch in one go:
+        >   git switch  -c <Branch name>
+        >  git checkout -b <Branch name> [older way]
 
-    to create and switch in one go:
-    >   git switch  -c <Branch name>
-    >  git checkout -b <Branch name> [older way]
+        switching branches with unstaged changes:
 
-    switching branches with unstaged changes:
+        > try to switch branches whith some unstaged changes on same file in current branch
+        - we either have to commit or stash them. (its called a conflict)
 
-    > try to switch branches whith some unstaged changes on same file in current branch
-    - we either have to commit or stash them. (its called a conflict)
+        > try to switch branches whith some unstaged changes with new file in current branch
+        - we can switch easyly as the new file is not known to current branch
 
-    > try to switch branches whith some unstaged changes with new file in current branch
-    - we can switch easyly as the new file is not known to current branch
+        recommendation is to always commit your changes in current branch
 
-    recommendation is to always commit your changes in current branch
+        deleting a branch:
 
-    deleting a branch:
+        git branch -d  / --delete (if already merged)
+        git branch -D / --delete --force (if you are sure you wnat to dlete without merge)
+        note: you cant delete a branch which u are in currently
 
-    git branch -d  / --delete (if already merged)
-    git branch -D / --delete --force (if you are sure you wnat to dlete without merge)
-    note: you cant delete a branch which u are in currently
+        rename branch:
 
-    rename branch:
+        > git branch -m  <new name>
+        note: to rename you have to be in that branch
 
-    > git branch -m  <new name>
-    note: to rename you have to be in that branch
+        git branch -v gives more information about all brnches with trim sha and opeliner last commit message
 
-    git branch -v gives more information about all brnches with trim sha and opeliner last commit message
+    Merging:
+    ---------
+        note:
+        1. we merge branches, not commits
+        2. we always merge to the current HEAD branch
+        ex: i have master and bugfix branches, to merge bugfix changes to master , you should be in receiving branch in this case master.
+        3. if your master's HEAD is still at a position where you created an initial branch, merging would be easy and its called fast-forward merging
+        4. they are not forever in sync. its for the moment
 
-Merging:
----------
-    note:
-    1. we merge branches, not commits
-    2. we always merge to the current HEAD branch
-    ex: i have master and bugfix branches, to merge bugfix changes to master , you should be in receiving branch in this case master.
-    3. if your master's HEAD is still at a position where you created an initial branch, merging would be easy and its called fast-forward merging
-    4. they are not forever in sync. its for the moment
+        fast-forward:
+            git switch master (the branch where i want something to be merged to)
+            git merge bugfix
 
-    fast-forward:
-        git switch master (the branch where i want something to be merged to)
-        git merge bugfix
+        as new merge commit from git- recursive strategy:
+            when your destination branch is ahead of your source branch, you can still apply the same command.
+            git will create a new commit for you.
 
-    as new commit from git- recursive strategy:
-        when your destination branch is ahead of your source branch, you can still apply the same command.
-        git will create a new commit for you.
+        resolve conflicts and merge:
+        u can use you CLI (default editor), GUI , IDE to manually rectify the conflict.
 
-    resolve conflicts and merge:
-    u can use you CLI (default editor), GUI , IDE to manually rectify the conflict.
+        once merged you can delete the merged branch.
+        note merged commits will have 2 parents
 
-    once merged you can delete the merged branch.
-    note merged commits will have 2 parents
+    git diff:
+    ----------
 
-git diff:
-----------
+        it doesnt perform anything to your repository , it is just am informative cli option for better understanding 
+        of what has been changed between branches, between working area to statging , staging to local and local to 
+        remote repos.
 
-    it doesnt perform anything to your repository , it is just am informative cli option for better understanding 
-    of what has been changed between branches, between working area to statging , staging to local and local to 
-    remote repos.
+        ex:
 
-    ex:
+        diff --git a/3.txt b/3.txt   (a is old file, b is new file)
+        index 542323c..5069130 100644 ( internl reference to these files)
+        --- a/3.txt  (old)
+        +++ b/3.txt  (old)
+        @@ -1,7 +1,7 @@  (Chunk header)
+        You may be shocked to learn that we had a hard time deciding on 10.
+        So, being captains of our own destiny, we decided we were allowed to pick 20 . . .
+        plus almost that many dissents. We did not allow reissues, otherwise you had better believe
+        -this list would include The Last Samurai, Speedboat, and Who Was Changed and Who Was Dead,
+        +this list woulsdsadd include The Last Samurai, Speedboat, and Who Was Changed and Who Was Dead,
+        among a robust host of others. We also, for this list, discounted novels in translation,
+        as they got their very own list last week, and including them would have necessitated a
+        list twice as long. (My beloved Sweet Days of Discipline, certainly in the top ten novels
 
-    diff --git a/3.txt b/3.txt   (a is old file, b is new file)
-    index 542323c..5069130 100644 ( internl reference to these files)
-    --- a/3.txt  (old)
-    +++ b/3.txt  (old)
-    @@ -1,7 +1,7 @@  (Chunk header)
-    You may be shocked to learn that we had a hard time deciding on 10. 
-    So, being captains of our own destiny, we decided we were allowed to pick 20 . . . 
-    plus almost that many dissents. We did not allow reissues, otherwise you had better believe 
-    -this list would include The Last Samurai, Speedboat, and Who Was Changed and Who Was Dead, 
-    +this list woulsdsadd include The Last Samurai, Speedboat, and Who Was Changed and Who Was Dead, 
-    among a robust host of others. We also, for this list, discounted novels in translation, 
-    as they got their very own list last week, and including them would have necessitated a 
-    list twice as long. (My beloved Sweet Days of Discipline, certainly in the top ten novels 
+        >   git diff   (viewing unstaged changes)
+        >   git diff HEAD (viewing working directory changes - it includes staged and unstaged changes)
+        >   git diff --staged (or)
+            git diff --cached (viewing only staged changes)
+        >   git diff branch1..branch2 (viewing differences between 2 branches, order matters b1 becomes a , b2 becomes b)
+            git diff branch1 branch2
+        >   git diff commit1..commit2 (viewing differences between commits, order matters c1 becomes a , c2 becomes b) )
+            git diff commit1 commit2
+        we can use diff to a specific file as well
+        >   git diff HEAD file1.txt
+        >   git diff --staged file1.txt
 
-    >   git diff   (viewing unstaged changes)
-    >   git diff HEAD (viewing working directory changes - it includes staged and unstaged changes)
-    >   git diff --staged (or)
-        git diff --cached (viewing only staged changes)
-    >   git diff branch1..branch2 (viewing differences between 2 branches, order matters b1 becomes a , b2 becomes b)
-        git diff branch1 branch2 
-    >   git diff commit1..commit2 (viewing differences between commits, order matters c1 becomes a , c2 becomes b) )
-        git diff commit1 commit2
-    we can use diff to a specific file as well
-    >   git diff HEAD file1.txt
-    >   git diff --staged file1.txt
+    Stashing:
+    ------------
+        scenario1: if there are files which are unstaged and you have to switch branch , git will let you with 'M' as indication
+        when the modified file dont conflict with your current switch.
 
-Stashing:
-------------
-    scenario1: if there are files which are unstaged and you have to switch branch , git will let you with 'M' as indication 
-    when the modified file dont conflict with your current switch.
+        scenario2: if there are files which are unstaged and you have to switch branch , git wont let u in if it identifies any conflict.
 
-    scenario2: if there are files which are unstaged and you have to switch branch , git wont let u in if it identifies any conflict.
+        >   git stash (or git stash save) - all files which are not committed yet will be stashed and make your working tree, staging area clean
+        >   git stash pop   - the stashed changes will appear back
+        >   git stash apply - whatever has been stashed will be applied but unlike pop it wont clean up the stashed history.
 
-    >   git stash (or git stash save) - all files which are not committed yet will be stashed and make your working tree, staging area clean
-    >   git stash pop   - the stashed changes will appear back 
-    >   git stash apply - whatever has been stashed will be applied but unlike pop it wont clean up the stashed history.
+        you can have multiple stashes
 
-    you can have multiple stashes
+        >   git stash list (will list the stashed list)
+        >   git stash apply stash@{2}
+        >   git stash drop stash@{1}
+        >   git stash clear (will clear everything)
 
-    >   git stash list (will list the stashed list)
-    >   git stash apply stash@{2} 
-    >   git stash drop stash@{1} 
-    >   git stash clear (will clear everything)
+    time travel: (restore, rest, revert)
+    --------------------------------------
 
-time travel: (restore, rest, revert)
---------------------------------------
+        checking out to specific commit:
+        ********************************
+        git checkout <abbrev comit or full sha>  - it will land you in to detached HEAD
+        purpose/ Options:
+        you can detach HEAD and examine the commit
+        you can re-attach HED back simply ny using: git switch <branch>
+        you can branchoff from a specific commit : 1. git checkout <abbrevsha> 2. git switch -c <new branch>
+        you can also position your HEAD to specific commit using HEAD~ : git checkout HEAD~1 (will take your HEAD position to 1 step back ,etc.)
+        when you have multiple branches with detached HEADs the easiest way to attach back is : git switch -
 
-    checking out to specific commit:
-    ********************************
-    git checkout <abbrev comit or full sha>  - it will land you in to detached HEAD 
-    purpose/ Options: 
-    you can detach HEAD and examine the commit 
-    you can re-attach HED back simply ny using: git switch <branch>
-    you can branchoff from a specific commit : 1. git checkout <abbrevsha> 2. git switch -c <new branch>
-    you can also position your HEAD to specific commit using HEAD~ : git checkout HEAD~1 (will take your HEAD position to 1 step back ,etc.)
-    when you have multiple branches with detached HEADs the easiest way to attach back is : git switch -
+        Discarding changes with checkout:
+        *********************************
+        supoose you made some changes to multiple files and you dont want to keep them and to revert to previous commit how they are use this option.
+        >   git checkout HEAD <filename>
+            git checkout  -- <file1> <file2> ..
+        git restore (which is a new command also does the same along with additional stuff)
 
-    Discarding changes with checkout:
-    *********************************
-    supoose you made some changes to multiple files and you dont want to keep them and to revert to previous commit how they are use this option.
-    >   git checkout HEAD <filename>
-        git checkout  -- <file1> <file2> ..
+        Restore:
+        *********
+        >   git restore <filename> [by default it restores with current HEAD]
+        [gotach: git status after adding new files to working area will tell you about this ]
+        you can go to specific HEAD position also using restore
+        >   git restore --source HEAD~2 <filename> [if you want to restore with specific head use this]
+        Assue you have staged few files out of which you want some to be carried over and some to be trashed back to working area
+        >   git restore --staged <filename1> <filename2> (pass the file names which you want to trashout)
+        [gotach: git status after git add . will tell you about this ]
 
-    git restore (which is a new command also does the same along with additional stuff)
+        reset:
+        *******
+        suppose you made few commits to your master branch but you actually meant to commit to a different branch
+        you can use git rest to undo the commit.
+        >   git reset <commit hash /sha> (plain reset)
+        Note: plain reset removes the commit , but wont removes the changes from working area, this is useful
+        when you need those changes for another branch
+        >   git reset --hard <commit hash /sha> (hard reset)
+        Note: hard reset removes the commit and also removes the changes from working area, this is useful
+        when totally want to get rid of the changes.
+
+        revert:
+        ********
+
+        both revert and reset will undo changes from a commit but they accomplish it different way
+        reset - moves branch pointer backwards, elimiate commits
+        revert -instead it creates a brand new commit which undo / reverse the changes from commit.
+        (as its resulted in a new commit it asks for commit message)
+
+        this is useful when working in colloboratively, history is still preserved.
+
+github:
+^^^^^^^^
+its a hosting platform for git repositories, you can access from anywhere and share them with other people.
+besides hosting github alos provides more features which are not native to git.
+
+step1: clone a repo
+> git clone https://github.com/gabrielecirulli/2048.git
+note: it create a folder 2048 by default , you can over rule this behaviour by passing a folder name of your choice
+> git clone https://github.com/gabrielecirulli/2048.git game_2048
+once cloned, check git status, git log, git branch .... you will get the whole info of remote to local.
 
 
 
-
-
-
-
-
+    rebase:
+    ********
+    1.  it is used as alternate to merging
+    2.  as a clean up tool
