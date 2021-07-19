@@ -1,0 +1,26 @@
+>   Istio is a service mesh 
+>   An extra layer of software deployed alongside you cluster (ex:k8s).
+>   All containers inside each pod are networked together and k8s uses service discovery mechanism to make network calls from any container to any container. 
+
+- But the problem here is k8s is good at managing pods but not good at giving a visibility of interconnection between the pods.
+this is where service mesh will help.
+
+so service mesh is an additionl layer which the calls will come to and go from pods alog with some mesh logic inside the sm layer.
+
+mesh logic could be: telemetry (to gather metrics of individual network requests)
+
+istio - injects a proxy container in each pod
+
+istio system - is responsible for guiding proxy (which deployed in its own namespace)
+it contains number of different pods which are responsible for ISTIO logic to work. pods like
+-   pilot
+-   citadel
+-   gallient etc.
+from version 1.5 Istio system had undergone a greater modification and got rid of all those pods and have only 1 pod (which has main logic)
+istiod (istio deamon) - which was pilot earlier
+istio system also have other pods which are for user interaction 
+
+>   The proxies inside each pod collectively are called "data plane"
+>   istio system is called "The control plane"
+
+we should not perform any changes to have istio working (except few)
