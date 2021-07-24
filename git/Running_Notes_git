@@ -115,7 +115,6 @@ GIT:
 
     Branching:
     -----------
-
         git log
 
         commit b2667f84f1e6a47c458dbbfd4b378c8dfb258168 (HEAD -> master, origin/master, origin/HEAD)
@@ -164,7 +163,7 @@ GIT:
         > git branch -m  <new name>
         note: to rename you have to be in that branch
 
-        git branch -v gives more information about all brnches with trim sha and opeliner last commit message
+        git branch -v gives more information about all branches with trim sha and opeliner last commit message
 
     Merging:
     ---------
@@ -191,13 +190,10 @@ GIT:
 
     git diff:
     ----------
-
-        it doesnt perform anything to your repository , it is just am informative cli option for better understanding 
-        of what has been changed between branches, between working area to statging , staging to local and local to 
+        it doesnt perform anything to your repository , it is just am informative cli option for better understanding
+        of what has been changed between branches, between working area to statging , staging to local and local to
         remote repos.
-
         ex:
-
         diff --git a/3.txt b/3.txt   (a is old file, b is new file)
         index 542323c..5069130 100644 ( internl reference to these files)
         --- a/3.txt  (old)
@@ -242,15 +238,16 @@ GIT:
         >   git stash drop stash@{1}
         >   git stash clear (will clear everything)
 
-    time travel: (restore, rest, revert)
-    --------------------------------------
+
+    time travel: (restore, reset, revert, rebase)  
+    ---------------------------------------------
 
         checking out to specific commit:
         ********************************
         git checkout <abbrev comit or full sha>  - it will land you in to detached HEAD
         purpose/ Options:
         you can detach HEAD and examine the commit
-        you can re-attach HED back simply ny using: git switch <branch>
+        you can re-attach HEAD back simply by using: git switch <branch>
         you can branchoff from a specific commit : 1. git checkout <abbrevsha> 2. git switch -c <new branch>
         you can also position your HEAD to specific commit using HEAD~ : git checkout HEAD~1 (will take your HEAD position to 1 step back ,etc.)
         when you have multiple branches with detached HEADs the easiest way to attach back is : git switch -
@@ -271,6 +268,10 @@ GIT:
         Assue you have staged few files out of which you want some to be carried over and some to be trashed back to working area
         >   git restore --staged <filename1> <filename2> (pass the file names which you want to trashout)
         [gotach: git status after git add . will tell you about this ]
+
+        NOTE:
+        git add .
+        git checkout HEAD file.txt = git restore --staged file.txt + git restore file.txt
 
         reset:
         *******
@@ -293,20 +294,27 @@ GIT:
 
         this is useful when working in colloboratively, history is still preserved.
 
+    rebase:
+    ********
+    1.  it is used as alternate to merging
+    2.  as a clean up tool using  - git rebase with squash 
+
 github:
 ^^^^^^^^
 its a hosting platform for git repositories, you can access from anywhere and share them with other people.
 besides hosting github alos provides more features which are not native to git.
 
-step1: clone a repo
-> git clone https://github.com/gabrielecirulli/2048.git
-note: it create a folder 2048 by default , you can over rule this behaviour by passing a folder name of your choice
-> git clone https://github.com/gabrielecirulli/2048.git game_2048
-once cloned, check git status, git log, git branch .... you will get the whole info of remote to local.
+>   public and Private 
+-   normal / community repos:  
+    :   public is visible to everyone but they cant push or pull unless you add them as collaborator
+    :   Private is only visible to people whom  you add them as collaborator
+
+-   Enterprise repos:  
+    :   public, everyone in the org can view, push and pull 
+    :   Private everyone in the org can view, but only collaborators can push and pull 
+
+create repos, add collaborators, make local cloes, push and pull..... 
+
+README.md (Markdown -to generate formated text)  --- sample : https://github.com/explosion/spaCy
 
 
-
-    rebase:
-    ********
-    1.  it is used as alternate to merging
-    2.  as a clean up tool
