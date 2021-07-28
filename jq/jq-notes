@@ -1,0 +1,34 @@
+# Parsing JSON in command-line with jq
+
+curl -s "https://jobs.github.com/positions.json?description=java" > output.json
+
+| jq .  ---- pretty format
+| jq '.[].location
+| jq '.[] | select(.location=="Remote")'  
+| jq '.[] | select(.location=="Remote") |{company:.company, url:.url, title:.title}'
+| jq '.[] | select(.location=="Remote") | .company, .url, .title'  
+| jq -r '.[] | select(.location=="Remote") | .company, .url, .title' (only role value is printed without quotes)
+
+
+curl -s "https://openlibrary.org/search.json?q=kb" > output_ol.json
+
+jq . output_ol.json  (to pass a file as json input to jq)
+jq '.docs' output_ol.json
+jq '.docs[] | {title, author_name, publish_year}' output_ol.json 
+(author name and publish year are arrays, so to extract as plain text call teh array values as below)
+jq '.docs[] | {title, author: .author_name[0], published : .publish_year[0]}' output_ol.json 
+jq '.docs[] | {title, author: .author_name[0], published : .publish_year[0]} | select(.published != null and .author != null)' output_ol.json 
+jq '[.docs[] | {title, author: .author_name[0], published : .publish_year[0]} | select(.published != null and .author != null)]' output_ol.json 
+(instructs jq to put the response in an array by putting query in [.....])
+jq '[.docs[] | {title, author: .author_name[0], published : .publish_year[0]} | select(.published != null and .author != null)] | sort_by(.published)' output_ol.json 
+(default sort order is ascending)
+jq '[.docs[] | {title, author: .author_name[0], published : .publish_year[0]} | select(.published != null and .author != null)] | sort_by(.published) | reverse' output_ol.json 
+(to sort in descending order)
+jq '[.docs[] | {title, author: .author_name[0], published : .publish_year[0]} | select(.published != null and .author != null)] | sort_by(.published) | reverse | length' output_ol.json 
+(to print the length of documents)
+jq '[.docs[] | {title, author: .author_name[0], published : .publish_year[0]} | select(.published != null and .author != null)] | sort_by(.published) | reverse | limit(3;.[])' output_ol.json 
+(to limit number of documents to return in output to 3)
+
+jq '[.docs[] | {title, author: .author_name[0], published : .publish_year[0]} | select(.published != null and .author != null)] | group_by(.author) | .[] | {author:.[0].author , count: .| length} ' output_ol.json
+jq % jq '[.docs[] | {title, author: .author_name[0], published : .publish_year[0]} | select(.published != null and .author != null)] | group_by(.author) | [.[] | {author:.[0].author , count: .| length}] | sort_by(.count)| reverse | [limit(3;.[])]' output_ol.json
+
