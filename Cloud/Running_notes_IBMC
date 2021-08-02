@@ -1,0 +1,624 @@
+Running notes:
+
+>	ibmcloud version
+>	ibmcloud Resource Service-Instance
+>	ibmcloud ks cluster ls
+> 	ibmcloud login --apikey <key>
+
+
+
+Cloud essentials
+
+Learning Objectives, After completing this module, you will be able to: 
+
+Summarize what IBM Cloud can do, at a high level 
+Explain the various categories of services and offerings available on IBM Cloud 
+Work with the IBM Cloud dashboard and CLI to manage your services 
+Set up basic IAM configurations for an IBM Cloud account 
+
+
+IBM Cloud is a combination of Platform as a Service (PaaS), Infrastructure as a Service (IaaS), and Software as a Service (SaaS).
+Users can deploy over 200 services from containers, data and AI, to blockchain and more. 
+
+IBM Cloud maintains 60 data centers worldwide, enabling local deployment and global scalability. 47 Fortune 50 companies trust mission-critical applications on IBM Cloud’s infrastructure.
+
+With open-source technologies, such as Kubernetes, Red Hat OpenShift, and compute options such as virtual machines and bare metal, you have the control and flexibility to support workloads in the environment of your choice.
+
+The IBM Cloud platform is composed of multiple components that work together to provide a consistent and dependable cloud experience.
+
+	The IBM Cloud platform is composed of a robust console that serves as the front end for managing your resources,
+	an identity and access management component for authentication and access control,
+	a catalog consisting hundreds of offerings, and
+	an account and billing management system that provides exact usage for pricing plans.
+
+One of the main ways of accessing IBM Cloud is through the IBM Cloud Console. From the
+console you can:
+
+read the Docs to learn more about products,
+use the Catalog to create new resources,
+access the IBM Cloud resources you have provisioned,
+use the support tab to open a ticket, 
+and invite new users using the user management tab.
+
+The IBM Cloud command-line interface (CLI) allows you to programmatically interact with IBM Cloud through a terminal or shell.
+
+The IBM Cloud CLI is supported by Mac, Linux, and Windows, extendable with plugins, and available through the Console via the IBM Cloud Shell terminal
+
+To interact with services IBM Cloud provides API’s (Application Programming Interface) and SDKs (Software Development Kit).
+
+For example, a developer can use the REST APIs to analyze text content, in the programming language of their choice while SDKs allow a developer to target a specific language. SDKs include support for Python, Node.js, Java, Swift, and other languages depending on the service.
+
+IBM is committed to providing our clients with data privacy, security, and governance solutions to assist them in their journey to compliance readiness. IBM Cloud is built on best-in-industry security standards, including GDPR, HIPAA, ISO 9001, PCI, and SOC2.
+
+Let's look at the IBM Cloud Console in a little bit more detail.
+Here on my dashboard you can see my resource summary, which is the most important pane.
+Here you can see the Cloud Foundry services I've deployed, my other services I have deployed,storage, and developer tools.
+You can also see Classic Infrastructure, your recent support cases, and any IBM Cloud status here as well.
+Once you click on catalog, you'll be brought to the IBM Cloud products catalog.
+Here you can quickly search for and create an instance of whatever product you may want.
+Next, you may want to go into the Docs.
+This will show you the documentation for any product you want.
+Next, if you click on the support tab, you'll go and be able to raise a ticket, and we will explore this later in one of the modules of the course.
+Lastly, in your Manage tab, you can see the status of your account and any sort of billing and usage, and IAM, which we will cover later in the course as well.
+
+Here, we also have the IBM Cloud shell.
+
+And lastly, we have the Cost estimator tool. We'll cover this later in the course as well.
+
+To get started with the IBM Cloud Shell, click on the icon on the top right. First, we'll check the version of our IBM Cloud CLI by issuing the command 
+>	ibmcloud version
+Next, we'll list all of our service instances on our account by issuing the command 
+>	ibmcloud Resource Service-Instance.
+Here we see all the instances that are deployed in our account.
+Lastly, we will list all of the Kubernetes clusters we have running with the 
+>	ibmcloud ks cluster ls
+This is the basic overview of the IBM cloud.
+Let's summarize:
+IBM cloud combines Platform as a Service (PaaS), Infrastructure as a Service (IaaS) and Software
+as a Service (SaaS).
+IBM cloud has a catalog of over 200 products and services covering containers, data and
+AI Blockchain and more.
+IBM cloud is committed to compliance and has more than 60 data centers globally.
+
+
+single zone
+multi zone 
+federal zone 
+
+IBM Cloud can deploy workloads in over 6 regions, 18 availability zones and 60 data centers
+
+This network spans 19 countries on six continents.
+
+The six IBM Cloud regions are 
+Dallas, 
+Washington DC 
+London, 
+Frankfurt, 
+Tokyo,
+Sydney.
+
+Locations: geography
+
+north america south
+north america east  
+north america west 
+south America
+Europe 
+Asia Pacific
+
+they further drill down as below: country, metro, Data center (zones)
+
+
+
+IBM Cloud has three main types of accounts.
+It has Lite accounts which are free of charge.	- 40 services
+Pay-as-You-Go accounts which allow you to access all IBM Cloud services - all services , basic support and prod usecases 
+Subscription accounts which are available for enterprise customers. - discounted pricing, all services
+
+support:
+
+basic - 24x7 chat and phone
+Advanced - + 1 < 1 , 2<2 , 3 <4
+Premium  - + 1 <15m , 2< 1 , 3<2 , tech accnt  mgr assigned
+
+billing:
+
+monthly overview, By service, Export usage as CSV
+
+
+cost tool:
+
+estimate cost of a service (all services supported)
+convert to currencies (can convert to 15 currencies)
+Export the estimate
+
+IAM:
+
+users and access groups
+Services and resources
+Access Policies
+
+
+users > Access groups
+Resources > resource groups
+
+(account owner) Acount > many users with their email addresses 
+
+services > vms, Object storage, DB etc.
+Resources > a resource is a provisioned service ex: vm-dev, vm-prod,  db-dev, db-prod 
+
+users > invited to join accounts , API keys support for authentication, IAM roles and  aceess are associated with a user
+	roles can be : viewer, operator, editor, Adminstrator
+
+access groups> collection of users (admins, billing, basic users) , allows for cleaner seperation of control, users can be part of 	multiple AG
+
+resources >  instance of a service , have automatic service id when created, users can select a region to create the resource , service roles dictate permissions for the services APIS
+	roles: reder, writer, manager 
+
+resource groups > collection of resources , rgs are specified at service creation time, it has no geographical restrictions
+
+bringing them all together is called Access Policy the combination of subject, role and target
+ex: 
+subject > users , access groups
+role> manager, editor
+target > resources, resource groups
+
+---------------------
+
+Virtual servers:
+
+There are four types of virtual server offerings on IBM cloud.
+
+virtual server service. - This is your usual virtual machine type service that offers a range of operating system and configurable RAM and processing power to fit your use case.
+
+bare metal service. - This service provides you the raw horsepower that you need for processing intensive and disk IO intensive workloads.
+
+power system service. - This service, as its name implies, allows you to spin up power system servers with operating systems such as AIX and IBM I.
+
+hyper protect service. - This service allows you to run virtual servers on IBM Linux 1. You get access to Z technology without having to purchase any unique hardware.
+
+There are different types of virtual servers: can be deployed on any 6 regions
+Public servers or multi-tenant:  are billed hourly or monthly.
+Dedicated servers:  are like public servers but they're single tenant. No noisy neighbors, so a little bit more expensive 
+transient servers:  are the least expensive option, but are  de provisioned as capacity grows.
+reserved servers:  These are committed to a one- or three-year contract.
+Images: Redhat, Ubuntu, Centos, Debian, Microsoft (with different versions)
+we can select upto:
+64vCPU, 512 RAM , 1Gbps network speed, 5 SAN volumes, 2 GPUs which based off the NVIDIA Tesla P-100 cards.
+
+bare metal: can be deployed on any 6 regions
+billing: Hourly, Monthly, 1yrm 3yr contract
+Images: Redhat, Ubuntu, Centos, Debian, Microsoft (with different versions) + VMware, citrix, no OS, Cloud linux 
+Vmware , SAP certificed offering available 
+4 to 72 core 
+up to 6TB ram and upto 36 drives
+GPU support which based off the NVIDIA Tesla P-100 cards.
+
+
+Power systems: Europe, North america south, north america east
+Machine types: e880, s922
+Images: AIX and IBM I (with different version) or bring your own linux
+
+Hyper protect: Europe, North america south, north america east , asia pacific 
+Linux one, secure, Easy to deploy, no Z skills required
+
+virtual servers are low at price but not great at performance or security.
+Power systems are great at performace 
+Bare metals are very expensive and give high performace
+Hyper protect z are great at security 
+
+
+ ---------------------
+
+Block and File storage:
+
+Block storage: 
+File storage:
+
+common between the above 2:
+size range from 20GB to 12TB , encryption at rest with no extra cost, no of IOPS up to 48k,  can be provisoned in any DC in the world,
+can take snapshots manually or can be scheduled 
+
+diff between abv two:
+Block storage uses iSCSI, file use NFS
+Block can attach to only 1 host at a time file can be attached to many.
+Block storage ideal for high intense workloads like db , file storage ideal for low intensity workloads
+
+Cloud backup: back up and restore data between servers in one or more DC
+adv: highly customizable - daily / wekly , OS / specific directory 
+its browser based portal, one click restore 
+Plugins for Ms sql, MS sharepoint, Oracle 
+end to end encryption - 256 bit private key encryption 
+geo-redundancy
+
+gotacha - after creating the storage, you have to attach to VM and then within VM you have to mount. 
+
+Object storage: ( seperate lecture)
+used for storing vast amount of unstructured data , files are uploaded as objects and saved in to buckets , it has not directory structure just metadata will be available about storage location and date time of insertion etc.
+
+advantages of COS: Access mgmt enabled , encrypted by default additonally u can use your own keys using ibm key protect, sql query supports, high speed transfer, SDKs and APIS
+
+Object storage resiliency have 3 options:
+ can store in cross regions - for high availability
+ dedicated region - gives high service integration and performace 
+ single DC - when you have restrictions to store data within country 
+service integration, performace and availability differs based on your selection.
+
+there are 4 storage clases available for IBM COS:
+
+smart tier - high cost saving and accesibility
+standard - expensive but highly accessible
+vault - high cost saving and accesibility ideal to use when you access the files once in a month
+cold valut - high cost saving, less accessible . ideal may be used once or twice an year. 
+
+ ---------------------
+
+ Network Services:
+
+ two different network services
+
+ CIS ( Cloud internet services): - using cloudflare
+
+DNS (Domain name service) - for host name resolution
+Transport layer security (TLS) - to secure data
+Global Load balancer (GLB) -  to reduce latency and icrease availability by routing based on server availability and health
+Rate limiting - Which automatically identifies and mitigates excessive requests  
+Ddos Protection -  A scalable and configurable service that protects againist brute force atacks
+smart routing - which ensures content is delivered on the fastest path from end user to application 
+Web Application Firewall (WAF) -  a layered defense to protect data against sophisticated attackers and malicious bots
+caching - which reduces latency and improves performance.
+
+networking Infrastructure services:
+
+Direct links - creates a direct private connection between remote networks and IBM Cloud. With direct link you have a secure dedicated connectivity. It gives you private access to IBM Cloud infrastructure. It offers a fully integrated hybrid environment. Whether your resources are in a data center or on IBM Cloud, direct link is perfect for creating multi cloud connectivity in a single environment.
+with direct link you can choose speed between 50 mbps to 10 gbps
+
+CDN - A CDN is a highly distributed platform of servers to help minimize delays. based on akamai , smarter scaling, secure , u can use it to optimize dynamic content , usage based pricing 
+
+Load Balancer - used to distribute traffic among to your virtual servers. You can choose between an IBM Cloud load balancer or a Citrix Netscaler VPX load balancer. Layer 4 and layer 7 , Public and private, server health checks, SSL offload,  monitoring metrics.
+
+Gateway Appliance  -enables you to create virtual routers, firewalls and private networking devices.
+
+Firewall - There are both hardware and software-based firewalls. These will prevent malicious activity, helping to ensure uptime of your server. You can add a firewall to a specific virtual server.
+
+VPN - VPNs facilitate connectivity from your network to IBM's private network.
+
+Subnet and IPs - subnets provide additional IP addresses for virtual machines. They are managed independently of virtual machine resources and are available until cancelled.
+
+VLAN - A VLAN is used to provide packet identification and to let multiple workloads coexist on the same physical equipment.
+
+ ---------------------
+
+VPC ( Virtual Private Cloud):
+
+a secure isolated private cloud hosted within a public cloud with an on-demand configurable pool of shared resources allocated within a public cloud environment. There is isolation between users achieved through private IP subnets and encrypted communication channels. authenticates users and provides remote access to the shared resources. This is essentially allowing organizations to work on a virtually private cloud.
+
+Virtual private clouds provide the necessary infrastructure in isolation as a fully automated solution.
+
+key componets of VPC are: 
+VPC network > Availability zone > subnet >> Virtual server instances, k8s, ssh keys, block storage, floating ip, lb, public gateway , vpn gateway. by default  a 100 Gigabyte General purpose block storage volume is created automatically.
+the VPC network has access to many cloud services such as AI, databases, IoT and Container Registry. The network also has access to DevOps services including monitoring, log analysis, and continuous delivery.
+
+in IBM cloud we have two generations of VPC - 
+gen1 - available on all 6 regions, upto 16gbps networking , provider manged security or bring your own
+gen2 - available in 5 regions, upto 80gbps networking, provider manged security only
+
+ ---------------------
+
+ vmware:
+
+ In 2016, IBM Cloud became the first cloud vendor to bring VMware services to the cloud.
+
+ VMWare dedicated - Baremetal solution with vCenter and Vsphere options
+: 	customer has access to the hypervisor.
+	vcenter - fully automated VMware based software defined data center
+	vsphere - Manually configure networking , storage and addons
+	Bring your own licence
+	add on services( veeam , zerto, f5 big ip and 10 more)
+
+Vmware shared - Maanged deployment of vcloud director
+:	IBM manages the hypervisor
+	cost effective
+	Perfect for temporary migration and burst
+	Disaster recovery
+	Self-service
+
+---------------------
+
+k8s, Openshift, cloud foundary, cloud functions 
+
+Containers and kubernetes:
+
+IKS - IBM cloud kubernetes service
+: 	fully maged environment with upgrades
+	secure cluster with (PCI, HIPPA ready ,SOC1 and many more)
+	singe and multizone configurations
+	supported add ons (service mesh or serverless add ons with few clicks)
+	logging and monitoring
+
+	available in all 6 regions 
+	types: 	virtual shared (2vcpu/4gb ram - 64/512), 
+			virtual dedicated (2vcpu/4gb ram - 56/242)(single tenant instance), 
+			baremetal (4vcpu/32gb ram - 28/512), 
+
+	billing: hourly, monthly, free (at this moment)
+
+container registry - a fully managed multi-tenant registry, hig available, public and private, vulnarability advisor
+helm catalog - access to IBM products, opensource projects like jenkins, tekton , multiple architecture like x86 powerNZ
+
+You first start off by logging into your IBM Cloud account.
+You select a region, you select a resource group, then you list or push images into a container registry with the IBM Cloud CR images command. You can list or create new Kubernetes clusters with the IBM Cloud KS command, and you can interact with your Kubernetes cluster with the kubectl Command.
+
+---------------------
+
+Openshift:
+
+it is based on open source project (OKD) 
+it is a lyaer built on top of kubernetes
+deployable on-premise or on a cloud
+enhanced security from RHEL
+
+
+k8s - quatr minor release 1.19 is latest , core network, the platform or user is responsible for integrating beyond the core framework.
+os - quatr release 4.4 is latest , k8s core + abstraction, opinions, an integration of common features are included.
+
+So how does OpenShift extend Kubernetes?
+The first is it provides an integrated Container Registry.
+It has a powerful integrated console that improve the experience for developers and operators.
+OpenShift takes the Kubernetes namespace concept and extends it with projects, allowing you to control access between who can access namespaces or projects.
+OpenShift greatly simplifies developer workflow with source to image and routes.
+Lastly, system administrators can use built-in monitoring tools like Grafana and Prometheus.
+
+IBM Cloud offers a highly available, fully managed OpenShift offering. In a matter of minutes, you can spin up your own OpenShift cluster and start deploying applications, allowing developers to focus on creating applications, not managing infrastructure.
+
+other benifits including - automated upgrades and patching
+secure clusters ( PIC , HIPPA ready , SOC1 n more)
+single and multizone configurations
+integrated with logDNA and sysdig
+Multiple versions supported (3.11 , 4.x)
+
+available in all 6 regions
+
+virtually shared, vitrtually dedicated, bare metal
+same profiles ((2vcpu/4gb ram - 64/512) like k8s
+billing is hourly and monthly - no free tier
+
+whats new on OS4: Operator framework, Openshift service mesh based on ISTIO, OS serverless computing based on K native , OS pipelines based on tekton, codeready workspaces (Red Hat Code ready workspaces uses Kubernetes and containers to provide a user with a consistent
+and secure development environment.)
+
+ways to try OS: IBM cloud, IBM Z, IBM power, aws, Azure and gcp, redhat os platform, rh virtualization, OS playground, RH code ready containers, VMware vsphere or any other baremetal
+
+---------------------
+
+cloud foundary:
+
+it is a PaaS offering: 
+
+traditional IT: X
+IaaS: networking, storage, servers, virtualization
+PaaS: networking, storage, servers, virtualization, O/S, Middleware, Runtime
+SaaS: networking, storage, servers, virtualization, O/S, Middleware, Runtime, Data, Application
+
+its an Opensource project that had its initial release in 2011. In 2015, the project was transferred to the newly created Cloud Foundry Foundation. The source code for Cloud Foundry is under an Apache license.
+
+deployment automation - You can deploy apps to Cloud Foundry using existing tools with zero modification to the code.
+
+Flexible Infrastructure: By decoupling applications from infrastructure, you can make individual decisions about where to host workloads on premise, in public clouds or in managed infrastructure.
+
+commercial Options: Cloud Foundry is container-based architecture runs apps in the most popular programming languages. And on the choice of your cloud infrastructure. IBM Cloud, AWS, Azure, GCP and more.
+
+Community support: Over 3,500 contributors 12,000 Slack participants and 850 meetups worldwide.
+
+when you deploy with Cloud Foundry on IBM Cloud, you'll get a fully managed multi-tenant environment.
+There are three ways to deploy your Cloud Foundry application on IBM Cloud.
+
+-	The first is to add a toolchain that includes the IBM Cloud continuous delivery service to your application.
+-	you can deploy from the application level console.
+-	bind to other IBM services automatically.
+
+There are many benefits to using Cloud Foundry on IBM Cloud.
+These include access control.
+You can set up fine grain assignment of compute capacity to development teams with IBM Cloud
+IAM policies.
+Health management.
+Applications that are crashing will automatically try to restart.
+Automatic routing.
+Publicly reachable URLs are automatically created for your applications.
+It's also Lite tier compatible.
+No credit card required.
+The Lite tier limit has a memory of 256 megabytes of application runtime.
+This is good enough for most weekend projects.
+There are many Cloud Foundry runtimes that are supported on IBM Cloud.
+This includes Java, node.js, Python, Go, Swift, PHP.net, Tomcat ,and Ruby.
+
+manifest.yaml  - name, buildpack, memory, instances
+
+ibmcloud cf push 
+
+as alternate to cf we have - google app engine , aws elastic beanstack 
+
+---------------------
+
+Cloud functions: (serverless)
+
+no server or resource management
+focus on microservices
+Pay only for code execution
+
+IBM cloud functions is a functions as a service (FaaS) based on opensource project Apache openwhisk which has 
+integrated API gateway : An API gateway is a component of cloud functions to expose API's. It comes with security, oauth support, rate limiting and custom domain support.
+
+IBM Cloud functions also supports open API, previously known as swagger.
+
+Cloud functions have built in integrations with other IBM Cloud services such as AI, databases, object storage.
+
+It also has support for external providers such as GitHub and GitLab. 
+
+IBM Cloud functions offer up to 5 million free executions per month.
+
+And lastly, there is logging in monitoring through the IBM Cloud Console.
+
+When talking about cloud functions, we have to talk about actions, triggers, and sequences.
+
+Actions -  are the building blocks of your serverless architecture.They contain the code performing the work and can be invoked via a rest API or trigger.
+
+Triggers - receive events from outside IBM Cloud functions and invoke all connected actions. (A webhook for a GitHub repository would be an example of a trigger.)
+
+Sequences - invoke multiple actions in linear order.This makes it possible to pass parameters from one function to the next.
+
+sample usecase - ETL , Alarm driven (batch or cron, one time or repeated)
+
+Cloud functions on IBM Cloud support many different runtimes.
+You have the option of choosing from Java, Node, Python, Go, Swift, PHP, Ruby or any other language or framework by leveraging containers.
+
+---------------------
+
+Databases:
+
+an organized collection of data - SQL, NoSQL
+
+Relational - SQL used to update and query db
+Relational databases are also great for asset compliance and high transaction applications such as online transaction processing.
+
+Document - NoSQL document stores include customer data, user generated content, and order data.
+
+Key Value - noSQL databases are leaderboards, caches, and shopping cart data
+
+Database as a service is a cloud computing service that lets users access and use a cloud
+DBaaS - cost effective mgmt, secure, available and scalable, Faster time to market
+:	DB2, DB2 hosted (with admin access) , MySQL, Postgres
+: 	Mongo , Cloudant (based on couchDB with 99.99% SLA), Elastic search
+:	Redis, etcd 
+
+
+---------------------
+
+Integration:
+
+integrations used to send data between applications : it provides connectivity, routing and transformation and enables sharing data, connecting applications and security
+
+comes as free and lite tier plan
+
+API connect: provides API creation and management with security rich features and centralized governance.
+:	geenrate swaggger APIs, Graphically assemble APIs, Share APIs with self service portal, API analytics
+
+APP connect: allows you to connect your applications, automate tasks with hundreds of built-in connectors.
+:	Automate your workflow, Integrate with 75+ connectors, use 50+ templates to get connected, create and expose flows as REST APIs.
+
+Event Streams: which is a high throughput message bus built with Apache Kafka.
+: Fully managed kafka service, HA, Intutive User experience, Event driven architecture, integrates with IBM services
+
+
+MQ: which provides enterprise grade messaging.
+: Fully managed messaging service, extend messaging to the cloud, IBM cloud and AWS compatible, use MQ explore or console
+
+---------------------
+
+Artificial Intelligence:
+
+data science - is a a method for creating insights from data using analytics and machine learning
+
+Many usecases from all industries : healthcare, banking, Education
+80% of data scientist time finding , cleaning and organizing the data.
+Once we have data, we can built models that can predict and forecast
+
+AI - is a huge field with many different domains
+
+machine learning, NLP, Speech, Vision, robotics , Planning and optimization
+
+AI framework - Tensor flow, scikit learn, pytorch
+
+
+AI on IBM :
+
+AI lifecycle management tools : 
+watson studio : Build ,run and manage AI models  
+watson ML: Run anddeploy models
+Knowledge catalog: categorize and share data and models
+watson Openscale: Monitor AI models
+Natural language understanding: uses deeplearning to extract metadata
+tone analyser: analyse and understands emotion
+Watson assistant 
+Discovery:search service
+Knowledge studio, Speech to text , text to speech, Language translator (can translate upto 68 languages)
+Natural language classifier : assign custom categories to inputted text
+
+---------------------
+
+Analytics:
+
+the science of analysing raw data inorder to make conclusions about that information
+
+Analytics cycle - Planning, descriptive, Diagnostic, Predictive , Prespective
+
+apache spark , hadoop
+
+IBM offers  5 different analytics services
+
+Analytics engine: spark and haddop, scalability, HIPPA ready in dallas region, Customizable env
+Streaming analytics: support for text audio video, real time analytics , integrates with spark and hadoop, built in domain analytics
+DB2 wearhouse: train ML models, Highly scalable, secure, Oracle compatible
+cognos Dashboard: creae visualization, live connection to data, embed visualization, explore data
+Information server: Extract transform laod with dataStage, DataLineage with information govt catalog, data profiling with info visualizer.
+
+---------------------
+
+DevOps:
+
+IBM support toolchain
+
+Code: gilabCE, github, bitbucket
+delivery: HELM, Razee, tekton
+run: cf, k8s, virtual servers
+learn: new relic, google analytics, sauce labs
+culture: slack, pagerduty, jira
+
+---------------------
+
+Block Chain:
+
+a permanant,growling list of records of records called blocks linked using cryptography
+genesis block - first block
+
+block chains are distributed, immutable, smart contracts
+
+Hyperledger fabric is foundation framework to build blockchain apps.
+
+supported by aliyun, aws, gcp, azure and ibm, oracle 
+
+Opensource hosted by linux foundation
+
+smart contracts -code that stored in a block chain and automatically executes.
+consensus - how nodes agree on order of transacation
+
+---------------------
+
+IOT - use cases
+
+Predective mentainance
+Asset tracking 
+Connected vehicles
+
+	- connect and register devices
+	- Information mgmt.
+	- real time analysis
+	- Risk and security management
+
+ibm cloud IOD dashboard gives:
+
+connected devices
+show data transfered
+monitor sensors
+geo visualization
+---------------------
+
+Cloud Packs:
+
+containerized software solutions built to run anywhere (IBM cloud, on-prem any cloud)
+
+values of cp:
+Modular architecture - you can pick and choose which software to apply
+Put AI to work 
+Built on openshift
+
+cp for - apps, data, integrations, automation, security, multicloud mgmt
